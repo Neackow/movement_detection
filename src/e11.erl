@@ -24,6 +24,9 @@ calibrate({MBx,MBy,MBz}) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 init(R0) ->
+
+    io:format("An e11 process is being init!~n"),
+
     Spec = #{
         name => ?MODULE,
         iter => 10000,
@@ -36,6 +39,9 @@ init(R0) ->
 
 
 measure({T0, X0, P0, R0}) ->
+
+    io:format("hera_measure called me: I am nav3:measure!~n"),
+
     DataNav = hera_data:get(nav3, sensor_fusion@nav_1),
     T1 = hera:timestamp(),
     Nav = [Data || {_,_,Ts,Data} <- DataNav, T0 < Ts, T1-Ts < 500],

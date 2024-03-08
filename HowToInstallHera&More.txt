@@ -150,10 +150,36 @@ I tried this :
 	e11:measure(State).  
 And this printed the quaternion representation of the PMOD_NAV orientation. SO IT WORKS! But why is nothing being written anywhere when I launch a measure?
 
+Don't forget to do the calibration first: sensor_fusion:set_args(nav3). for this 3D orientation.
 
-06/03: 
+
+07/03: 
 The SD card went into read-only mode, because I interrupted the deploy process (or the build? I don't know). To solve the problem, unlock your SD card as shown here: https://askubuntu.com/questions/213889/microsd-card-is-set-to-read-only-state-how-can-i-write-data-on-it
 Then type: sudo mount -orw,remount *yourSDcardPATH*
+
+08/03: something I hadn't done, but maybe is important: in the config folder, computer.config.src and sys.config, remember to modify this line to adapt to your computer:
+
+{sync_nodes_optional, [
+        sensor_fusion@nicolas-HP-ZBook-Studio-G4,  <--
+        sensor_fusion@nav_1
+    ]},
+BY THE WAY: as you can see in the name, I had "-" in the computer name. This lead to trouble with sys.config during the deployement. To solve this, on Linux:
+	- On the top left corner, go to Activities;
+	- Search for About;
+	- The first thing will be the computer name: you can change it to whatever, without a "-" or arithmetic sign.
+
+If you have the brilliant idea, as I did, to take every repository referred to in the rebar.config to make it your owns so that you can edit them (easier debugging), here is how to do it:
+	- Go on your Github account ;
+	- Create the repositories: I recommand keeping hera and hera_synchronization as default names for these, but your "main repository", you can call it what you want. It will still be called sensor_fusion on the GRiSP, but who cares ;
+	- Locally clone all the repositories, then download the original repositories (download the .zip, easier), put everything inside the CORRECT folder.
+	- Then the usual: git add * ; git commit -m "Initial commit for ..." ; git push -u origin main ; 
+	- Once the repositories are set up, you can now go and modify all the rebar.config, computer.config.src, etc. to put your names and reference your repositories. You will have to change stuff in the hera repo and in the main repo. Nothing to change in hera_synchronization.
+	- Push every changes.
+	- Delete _grisp and _build in the main folder.
+	- rebar3 grisp build. 
+You should have everything working now !
+
+
 
 
 

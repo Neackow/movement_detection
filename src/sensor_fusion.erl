@@ -19,6 +19,7 @@ set_args(nav) ->
     update_table({{mag, node()}, Cm});
 
 %% set the args for the nav3 and e11 modules
+%% Calibration function for the 3D orientation test.
 set_args(nav3) ->
     Cn = nav3:calibrate(),
     R0 = e11:calibrate(element(3, Cn)),
@@ -121,16 +122,14 @@ launch(nav) -> % This is the function called by sensor_fusion:launch() when we a
     R0 = ets:lookup_element(args, {e11, node()}, 2),
     % {ok,_} = hera:start_measure(nav, Cn),
     % {ok,_} = hera:start_measure(mag, Cm),
-    %io:format("I'm calling hera:start_measure~n"),
-    {ok,_} = hera:start_measure(nav3, Cn),              % Starts a measure process from Hera. In hera_measure_sup, this leads to supervisor:start_child(?MODULE, [nav3, Cn]). 
-    {ok,_} = hera:start_measure(e11, R0),               % The child process is started by using the start function as defined in the child specification (if not simple_one_for_one).
-% Here, it is a simple_one_for_one. The child specification defined in Module:init/1 is used (which is hera_measure), and ChildSpec must instead be an arbitrary list of terms List. 
-% The child process is then started by appending List to the existing start function arguments, that is, by calling apply(M, F, A++List), where {M,F,A} is the start function defined 
-% in the child specification.
-% In hera_measure, this starts the init function and calls e11:init(R0), e.g. We then have a subscription. Then, somehow, measure will call the measure process of the module.
-% This will call hera_com:send(N, Seq, Vals) in hera_measure.erl.In it, it will try to send to itself. loop(Socket) receives it, a priori gets into {send_packet, Packet}, thus calls
-% gen_udp:send(Socket, ?MULTICAST_ADDR, ?MULTICAST_PORT, Packet);
-% But there are some values there that are hardcoded. Is it ok?
+
+    io:format("I'm calling hera:start_measure(nav3, Cn)~n"),
+
+    {ok,_} = hera:start_measure(nav3, Cn),              % Starts a measure process from Hera. 
+
+    io:format("I'm calling hera:start_measure(e11, R0)~n"),
+
+    {ok,_} = hera:start_measure(e11, R0),               
     ok;
 
 launch(sonar) ->

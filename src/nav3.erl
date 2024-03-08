@@ -29,6 +29,9 @@ calibrate() ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 init(C) ->
+
+    io:format("A nav3 process is being init!~n"),
+
     Spec = #{
         name => ?MODULE,
         iter => infinity,
@@ -38,6 +41,9 @@ init(C) ->
 
 
 measure(C=#cal{gyro={GBx,GBy,GBz}, mag={MBx,MBy,MBz}}) ->
+
+    io:format("hera_measure called me: I am nav3:measure!~n"),
+
     [Ax,Ay,Az, Gx,Gy,Gz] = pmod_nav:read(acc, [
         out_x_xl,out_y_xl,out_z_xl,
         out_x_g,out_y_g,out_z_g]),

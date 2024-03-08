@@ -1,9 +1,9 @@
 %--- Erlang Inet Configuration -------------------------------------------------
 
 % Add hosts
-%{host, {192,168,1,12}, ["nicolas-HP-ZBook-Studio-G4"]}. 	% computer node @ home.
-%{host, {130,104,152,168}, ["nicolas-HP-ZBook-Studio-G4"]}. 	% computer node in TFE room, on Eduroam.
-{host, {192,168,43,32}, ["nicolas-HP-ZBook-Studio-G4"]}.	% computer node in TFE room, on my phone.
+%{host, {192,168,1,12}, ["neackow_z4"]}. 	% computer node @ home.
+%{host, {130,104,152,168}, ["neackow_z4"]}. 	% computer node in TFE room, on Eduroam.
+{host, {192,168,43,32}, ["neackow_z4"]}.	% computer node on my phone.
 {host, {192,168,43,215}, ["nav_1"]}.
 %{host, {X,X,X,X}, ["nav_1"]}.
 
