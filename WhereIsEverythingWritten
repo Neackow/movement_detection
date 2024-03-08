@@ -1,0 +1,10 @@
+hera_data.erl:
+
+	1) file_name(Name, Node) ->
+	    lists:append(
+		["measures/", atom_to_list(Name), "_", atom_to_list(Node), ".csv"]). 
+	It returns measures/Name_Node.csv 
+	2) handle_cast:
+	
+	MapNode0 = maps:get(Name, MapData, #{}) % Look for the key "Name" in MapData. If not found, return empty value.
+	In the end, should call log_data, which then writes.

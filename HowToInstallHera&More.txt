@@ -1,0 +1,191 @@
+NOTE: this tutorial worked on Linux-Ubuntu 20.04. I installed in in february 2024 (if you want to check the versions for the programs).
+I do not guarantee this will work for you, or for another OS.
+Furthermore, sometimes, this is just me talking to myself an noting the errors I got, how to solve them, etc. Some things lead to dead-ends: I leave them here just for the sake of completeness, and just in case you thought about it and tried it and don't find any info anywhere.
+
+Using this tutorial: https://github.com/lunelis/sensor_fusion (from TFE of 2022, Lucas Nélis, go in the README).
+
+For kerl: 
+First things first : do the commands from the tutorial (https://github.com/grisp/grisp/wiki/Setting-Up-a-Development-Environment), GRiSP tutorial, how to set up an environment.
+Then ADD IT TO YOUR PATH, see : (https://www.howtogeek.com/658904/how-to-add-a-directory-to-your-path-in-linux/) (beware if you modify directly bashrc, different commands than in shell)
+Install Erlang. If any package is missing, install it (gcc, + many others, see this link: (https://github.com/asdf-vm/asdf-erlang/pull/10/files) this is for asdf, but the same goes for kerl. wxWidget didn't work for me.
+
+Upon using : kerl install 25.3 /usr/local/lib/erlang/25.3, I had MANY problems (Access denied).
+The user with which I install Erlang did not have the rights on the directory. So, to solve this issue, go to said directory and type: sudo chmod 777 directoryName.
+This will allow to read, write and execute for anybody on the computer on the directory. If the error message happens on a subdirectory, do the same on it.
+BUT BEWARE, it is ugly and can be dangerous: anyone on your computer can now modify your Erlang installation... But who would?
+The rest should go fine. You now have Erlang (in my case, 25.3) installed on your computer!
+
+Rebar3: go to: https://github.com/erlang/rebar3 follow tutorial in getting started. 
+Once in cd rebar3 and ./bootstrap, I got the error message: "OTP Application crypto not available. Please fix your Erlang install to support it and try again."
+This is probably because I install ssl (ssh command in link earlier) AFTER installing Erlang. I hope you didn't do the same mistake.
+If you did, delete the installation then the build and redo with ALL packages installed.
+Once you did all this, ./bootstrap should work better (green lines with ===> at the start).
+Then ./rebar3 local install.
+
+GRiSP rebar3 plugin: the tutorial says to add the plugin for GRiSP in the /.config/rebar3/rebar.config file... Which did not exist for me.
+I created the directory and rebar.config and added the plugin configuration.
+Upon doing the update, the window said "no escript". Be sure to have an active Erlang/OTP on in your window when you do the commands.
+Now, you maybe have errors loading the plugin. This is getting tricky.
+The way to solve it is to force the place where the files are. You should replace the given code by this:
+
+{plugins, [
+{rebar3_hex, {git, "https://github.com/erlef/rebar3_hex.git", {branch, "main"}}},
+{rebar3_grisp, {git, "https://github.com/grisp/rebar3_grisp.git", {branch, "master"}}}
+]}.
+
+TO GO FASTER: crtl+r and type start of command.
+DO NOT FORGET: to have rebar3, etc. running, you need a valid Erlang session: 
+	. /usr/local/lib/erlang/25.3/activate 
+(Depending on your version, put the right one).
+By the way, do not forget to also add rebar3 to your PATH: 
+	export PATH=$PATH:~/.cache/rebar3/bin
+
+Once everything is setup, you can try the example given by the GRiSP team (LED)! To run the program, do the tutorial, load on the SD card as explained and insert it into the GRiSP.
+Create a new app: be in the rebar3 folder, type: rebar3 new grispapp name=Name dest=/whereisyourSDcard
+Me: rebar3 new grisapp name=Name dest=/media/nicolas/GRISP
+This creates a folder in rebar3. You can take this folder wherever you want, the commands for rebar3 will work if you added it to your path. 
+
+CONNECTION OVER SERIAL:
+To connect over Serial (USB) and open a GRiSP terminal: 
+	sudo picocom /dev/ttyUSB1 --baud 115200 --echo 
+(in the app folder).
+To leave picocom without cancelling the program (q().), use crtl+a then ctrl+q. This works apparently only for tty, not for the connection over Wi-fi, for which you type q(). in the Erlang shell first before doing the classical ctrl+c.
+
+
+WIFI: 
+I recommand, if you want to understand what is happening, to do it on a "random project", like the example project mentioned earlier. This will allow you to 
+train yourself with the commands and maybe better understand what is happening. I followed the tutorial from the GRiSP page (https://github.com/grisp/grisp/wiki/Connecting-over-WiFI-and-Ethernet). 
+Follow the guide up until "Finding out the IP address of the GRiSP board when using DHCP", at which point you will have a problem, because the GRiSP (maybe) never connected to Wifi before.
+To do so, follow the guide at GRiSP INI, then Configuring Wi-fi. Next, deploy the app as per usual (a priori, make deploy-nav_1). Put it into the GRiSP board and restart the board.
+You should now see messages in the shell about wlan0 mentioning errors (File exists). This should not be a problem.
+Now, using 
+	inet:getifaddrs().
+you should see under wlan0 the address of your GRiSP board.
+Follow again the tutorial and add with sudo /etc/hosts the Wifi of your board.
+Next, use erl -sname my_remote_shell -remsh my_project@my_grisp_board -setcookie MyCookie
+In my case, it was: erl -sname my_remote_shell -remsh robot_HB5@testing_the_wifi -setcookie CookieNicolas in the case of my application.
+
+This whole process can be repeated on the sensor_fusion application. I'm using the makefile to do so, as detailed on the Git repo of Lucas.
+For me : 
+	make deploy-testing_the_wifi !nav_1 necessary.
+The given name in itself should not a problem (IT IS), since it takes the "env.NAME" variable in grisp.ini.mustache! The NAME variable is attributed to whatever commes after the deploy-%.
+For the first GRiSP, beware that the MyCookie is set by default and that the project name should be sensor_fusion.
+You can indeed see in the makefile under the "remote shell" part that it calls sensor_fusion.
+
+
+********************* Added on 04/03. A lot of it are just notes, maybe not especially important for everybody.
+
+Beware: I tried to be smart and put my computer node twice in the erl_inetrc file, so I did not have to care about whether I was at home or not. Guess it does not like having twice the same name, however. Comment the node which you don't need and rebuild.
+
+Also, make sure the network that the GRiSP is trying to reach (Wi-fi) is not disabled. 
+
+Beware of syntax error in the erl_inetrc file. Instead of separating the numbers by a "," I typed an IP address with "."!
+
+Then, you can open a remote shell with: 
+	erl -sname my_remote_shell -remsh sensor_fusion@testing_the_wifi -setcookie MyCookie
+This led to a : *** ERROR: Shell process terminated! (^G to start new job) ***
+I tried switching to my connection sharing for the computer. It gave me another IP address compared to when I tried earlier. Putting this into erl_inetrc and rebuilding then using the command mentioned above worked. The name is the same you put during "make deploy-name".
+
+Using "make shell" works, but the clean start "make local_release && make run_local" does not, with error: "Could not start kernel pid",application_controller,"invalid config data: application: grisp; duplicate parameter: devices"
+In home/nicolas/TFE/sensor_fusion/_build/computer/rel/sensor_fusion/releases/1.0.0/, several files are available. In sys.config, two {devices} variables were set. This comes from the computer.config.src in the config folder. I commented one of the two and rebuild.
+
+Now, it says it doesn't find numerl.so. It points to "sensor_fusion/src/numerl.erl", line 9.
+Hold on to me: so, line 9 call erlang:load_nif. load_nif takes as first argument the file path to the shareable object/dynamic library, minus the OS-dependent extension (.so in Linux), here, "numerl". However, numerl.so seems to be moved in the trash, as shown by the command "find /home -name numerl.so". Problem!	
+According to this wiki (https://github.com/grisp/grisp/wiki/NIF-Support), there are some special requirements, such as having a main C file named NAMEOFDRIVER_nif.c. and this file must reside in the application top level folder, under the following path: grisp/<platform>/<version>/build/nifs/NAMEOFDRIVER_nif.c
+In my case, I did grisp/grisp2/default/build/nifs/numerl_nif.c
+Initially, it was located under grisp/grisp2/common/build/nifs/numerl_nif.c
+This returned an even weirder error, upon rebuilding it: 
+
+* Patching
+    [grisp] 00100-rtems.patch (already applied, skipping)
+    [grisp] 00300-drivers-nifs.patch
+===> sh(git apply --ignore-whitespace 00300-drivers-nifs.patch) %% Note: this file can be found in _grisp/grisp2/otp/<your_version>/build/
+failed with return code 1 and the following output:
+error: patch failed: erts/emulator/Makefile.in:938 %% At this line, we find: ASMJIT_PCH_OBJ=$(TTF_DIR)/asmjit/asmjit.hpp.gch
+error: erts/emulator/Makefile.in: patch does not apply
+
+So either my tactic is wrong, or there is something I don't understand.
+Back to the original version. In the shell, I get this message: 
+
+===> Preparing
+* Patching
+    [grisp] 00100-rtems.patch (already applied, skipping)
+    [grisp] 00300-drivers-nifs.patch (already applied, skipping)
+* Copying files
+    [grisp] erts/emulator/sys/unix/erl_main.c
+    [grisp] xcomp/erl-xcomp-arm-rtems5-25.conf
+    [grisp] xcomp/erl-xcomp-arm-rtems5.conf
+* Copying drivers
+    [grisp] erts/emulator/drivers/unix/grisp_termios_drv.c
+* Copying nifs
+    [grisp] erts/emulator/nifs/common/grisp_gpio_nif.c
+    [grisp] erts/emulator/nifs/common/grisp_hw_nif.c
+    [grisp] erts/emulator/nifs/common/grisp_i2c_nif.c
+    [grisp] erts/emulator/nifs/common/grisp_rtems_nif.c
+    [grisp] erts/emulator/nifs/common/grisp_spi_nif.c
+    [sensor_fusion] erts/emulator/nifs/common/numerl_nif.c %% SO apparently, it DOES copy it. So the question is: why is it not available to be used in the GRiSP?
+    
+I decided to try and continue with make shell.
+
+~~~~~~~~~~~~~~~~~~~~
+05/03: I saw in e11.erl that it is asking for hera_data:get(nav3, sensor_fusion@nav_1). So I guess the name WAS important.
+Both of which I don't have, I did nav with testing_the_wifi. After rebuild, I deployed it named nav_1. 
+It struggled to connect to Wi-fi but eventually did.
+
+When I call sensor_fusion:launch()., it does a "try launch(node_type())". 
+node_type() is a function which checks the name of the host (e.g. : nav_1) and takes the prefix as a node. So, it knows it has a nav!
+If everything is fine, it launches 
+	{ok,_} = hera:start_measure(nav3, Cn), % THIS CALLS FOR THE CALIBRATION VALUES. If everything is ok, it goes on.
+    	{ok,_} = hera:start_measure(e11, R0),
+If everything is fine, starts hera:start_measure, which calls for a hera_measure_sup:start_child. The module is the name given, so nav3 and e11 and the arguments are the calibration values. This will start supervisors which execute the two modules with the arguments. From there, I suppose it is smart enough to do the measures.
+
+It appears the call to e11 should measure. Upon calling this function, it should do hera_data:get(nav3, sensor_fusion@nav_1) but it seems like it is never launched.
+Upon launching launch_all(), it returns badrpc, meaning some node (and I suspect it is my computer) are not well taken care of.
+
+Weird. Calling the single node should launch the measure on that node, but I see no way of doing so in the code.
+I tried this : 
+	sensor_fusion:launch().
+	R0 = ets:lookup_element(args, {e11, node()}, 2).
+	{ok, State, Spec} = e11:init(R0). 
+	e11:measure(State).  
+And this printed the quaternion representation of the PMOD_NAV orientation. SO IT WORKS! But why is nothing being written anywhere when I launch a measure?
+
+
+06/03: 
+The SD card went into read-only mode, because I interrupted the deploy process (or the build? I don't know). To solve the problem, unlock your SD card as shown here: https://askubuntu.com/questions/213889/microsd-card-is-set-to-read-only-state-how-can-i-write-data-on-it
+Then type: sudo mount -orw,remount *yourSDcardPATH*
+
+
+
+
+_______________________________________________________________________________
+
+
+INSTALLING & USING HERA, SENSOR_FUSION, etc. :
+
+I started by going on the repository of Hera (https://github.com/sebkm/hera) and git cloned it to wherever you want.
+Compile it (rebar3 compile).
+In sensor_fusion from Lucas Nélis (https://github.com/lunelis/sensor_fusion/tree/master/src), you can find in src/ the file sensor_fusion.app.src, where you can see that hera is called as an application, from which you can get functions.
+In the end, you do not need to get hera, for that it is directly imported in rebar.config from the sensor_fusion application. So git clone sensor_fusion instead.
+
+For the application's build, he mentions using Docker. We had big problems with the docker, the build was not working. It appears that rebar3 does not know what docker is, despite having installed it.
+(To install docker, see https://docs.docker.com/engine/install/ubuntu/)
+After basically 1h of scanning the Internet and even asking ChatGPT, we went on the docker hub website, into the grisp/grisp2-rtems-toolchain and we did the docker pull:
+sudo docker pull grisp/grisp2-rtems-toolchain (we did this to have the docker image locally. Doing this without sudo failed (daemon socket connection error).)
+This sadly did nothing.
+
+What we did to get the docker running is that on this page (https://github.com/grisp/rebar3_grisp/releases), they mention adding the docker toolchain possibility. 
+Downloading the .zip, in one of the files of the src/ directory, we saw that it was trying to ask for "docker info", which returned an error, leading to the problem.
+To get rid of this, we followed the advices given on this page: https://phoenixnap.com/kb/cannot-connect-to-the-docker-daemon-error
+This allowed us to have a functionning docker! 
+
+Next, putting the right Erlang/OTP version in the rebar.config file, we got to a new error. It did not find a C compiler for the code.
+
+Despite our best efforts, we could not make the docker work. After extensive research, we decided to go with a toolchain. 
+Go to: https://github.com/grisp/grisp2-rtems-toolchain and git clone the repo, then "make install" inside the repository. This will take A WHILE. A LONG WHILE.
+Then, in rebar.config, instead of {docker, "grisp/grisp2-rtems-toolchain"}, put {directory, "where_is_your_toolchain_installed"} 
+(e.g. for me: {directory, "/home/nicolas/TFE/grisp2-rtems-toolchain/rtems/5"}). 
+You should now be able to compile sensor_fusion. Go to the directory and type "rebar3 grisp build". Again, this will take a while.
+Then, I used the make file as Lucas Nélis did and deployed it.
+~~~~~~~
+See other file for some other additions.

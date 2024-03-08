@@ -1,0 +1,17 @@
+%--- Erlang Inet Configuration -------------------------------------------------
+
+% Add hosts
+%{host, {192,168,1,12}, ["nicolas-HP-ZBook-Studio-G4"]}. 	% computer node @ home.
+%{host, {130,104,152,168}, ["nicolas-HP-ZBook-Studio-G4"]}. 	% computer node in TFE room, on Eduroam.
+{host, {192,168,43,32}, ["nicolas-HP-ZBook-Studio-G4"]}.	% computer node in TFE room, on my phone.
+{host, {192,168,43,215}, ["nav_1"]}.
+%{host, {X,X,X,X}, ["nav_1"]}.
+
+% Do not monitor the hosts file
+{hosts_file, ""}.
+
+% Disable caching
+{cache_size, 0}.
+
+% Specify lookup method
+{lookup, [file, dns]}.

@@ -1,0 +1,77 @@
+#{drivers =>
+      #{<<"erts/emulator/drivers/unix/grisp_termios_drv.c">> =>
+            #{app => grisp,
+              name => <<"erts/emulator/drivers/unix/grisp_termios_drv.c">>,
+              source =>
+                  <<"sensor_fusion/_build/default/lib/grisp/grisp/grisp2/common/build/drivers/grisp_termios_drv.c">>,
+              target => <<"erts/emulator/drivers/unix/grisp_termios_drv.c">>}},
+  files =>
+      #{<<"erts/emulator/sys/unix/erl_main.c">> =>
+            #{app => grisp,name => <<"erts/emulator/sys/unix/erl_main.c">>,
+              source =>
+                  <<"sensor_fusion/_build/default/lib/grisp/grisp/default/common/build/files/erts/emulator/sys/unix/erl_main.c">>,
+              target => <<"erts/emulator/sys/unix/erl_main.c">>},
+        <<"xcomp/erl-xcomp-arm-rtems5-25.conf">> =>
+            #{app => grisp,name => <<"xcomp/erl-xcomp-arm-rtems5-25.conf">>,
+              source =>
+                  <<"sensor_fusion/_build/default/lib/grisp/grisp/grisp2/25/build/files/xcomp/erl-xcomp-arm-rtems5-25.conf">>,
+              target => <<"xcomp/erl-xcomp-arm-rtems5-25.conf">>},
+        <<"xcomp/erl-xcomp-arm-rtems5.conf">> =>
+            #{app => grisp,name => <<"xcomp/erl-xcomp-arm-rtems5.conf">>,
+              source =>
+                  <<"sensor_fusion/_build/default/lib/grisp/grisp/grisp2/common/build/files/xcomp/erl-xcomp-arm-rtems5.conf">>,
+              target => <<"xcomp/erl-xcomp-arm-rtems5.conf">>}},
+  hooks =>
+      #{post_install =>
+            #{"post-install-00500-clean.sh" =>
+                  #{app => grisp,name => <<"post-install-00500-clean.sh">>,
+                    source =>
+                        <<"sensor_fusion/_build/default/lib/grisp/grisp/grisp2/common/build/hooks/post-install-00500-clean.sh">>}}},
+  nifs =>
+      #{<<"erts/emulator/nifs/common/grisp_gpio_nif.c">> =>
+            #{app => grisp,
+              name => <<"erts/emulator/nifs/common/grisp_gpio_nif.c">>,
+              source =>
+                  <<"sensor_fusion/_build/default/lib/grisp/grisp/grisp2/common/build/nifs/grisp_gpio_nif.c">>,
+              target => <<"erts/emulator/nifs/common/grisp_gpio_nif.c">>},
+        <<"erts/emulator/nifs/common/grisp_hw_nif.c">> =>
+            #{app => grisp,
+              name => <<"erts/emulator/nifs/common/grisp_hw_nif.c">>,
+              source =>
+                  <<"sensor_fusion/_build/default/lib/grisp/grisp/default/common/build/nifs/grisp_hw_nif.c">>,
+              target => <<"erts/emulator/nifs/common/grisp_hw_nif.c">>},
+        <<"erts/emulator/nifs/common/grisp_i2c_nif.c">> =>
+            #{app => grisp,
+              name => <<"erts/emulator/nifs/common/grisp_i2c_nif.c">>,
+              source =>
+                  <<"sensor_fusion/_build/default/lib/grisp/grisp/default/common/build/nifs/grisp_i2c_nif.c">>,
+              target => <<"erts/emulator/nifs/common/grisp_i2c_nif.c">>},
+        <<"erts/emulator/nifs/common/grisp_rtems_nif.c">> =>
+            #{app => grisp,
+              name => <<"erts/emulator/nifs/common/grisp_rtems_nif.c">>,
+              source =>
+                  <<"sensor_fusion/_build/default/lib/grisp/grisp/default/common/build/nifs/grisp_rtems_nif.c">>,
+              target => <<"erts/emulator/nifs/common/grisp_rtems_nif.c">>},
+        <<"erts/emulator/nifs/common/grisp_spi_nif.c">> =>
+            #{app => grisp,
+              name => <<"erts/emulator/nifs/common/grisp_spi_nif.c">>,
+              source =>
+                  <<"sensor_fusion/_build/default/lib/grisp/grisp/default/common/build/nifs/grisp_spi_nif.c">>,
+              target => <<"erts/emulator/nifs/common/grisp_spi_nif.c">>},
+        <<"erts/emulator/nifs/common/numerl_nif.c">> =>
+            #{app => sensor_fusion,
+              name => <<"erts/emulator/nifs/common/numerl_nif.c">>,
+              source =>
+                  <<"sensor_fusion/grisp/grisp2/common/build/nifs/numerl_nif.c">>,
+              target => <<"erts/emulator/nifs/common/numerl_nif.c">>}},
+  patches =>
+      #{<<"00100-rtems.patch">> =>
+            #{app => grisp,name => <<"00100-rtems.patch">>,
+              source =>
+                  <<"sensor_fusion/_build/default/lib/grisp/grisp/default/25/build/patches/00100-rtems.patch">>,
+              target => <<"00100-rtems.patch">>},
+        <<"00300-drivers-nifs.patch">> =>
+            #{app => grisp,name => <<"00300-drivers-nifs.patch">>,
+              source =>
+                  {template,<<"sensor_fusion/_build/default/lib/grisp/grisp/default/25/build/patches/00300-drivers-nifs.patch.mustache">>},
+              target => <<"00300-drivers-nifs.patch">>}}}
