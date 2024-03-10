@@ -180,6 +180,9 @@ If you have the brilliant idea, as I did, to take every repository referred to i
 You should have everything working now !
 
 
+10/03: to make it work (it was not working because log_data was at false, despite hardcoding its value to true), remove rebar.lock and in Hera folders, check everywhere for this configuration (NOT ONLY in the main folder, as mentioned in the original tutorial). Typically: hera/ebin -> hera.app and hera/src -> hera.app.src. Push every changes to your git repositories.
+
+
 
 
 
