@@ -8,6 +8,19 @@
 -define(VAR_Q, 0.001).
 -define(VAR_R, 0.01).
 
+
+% Decide whether or not to print the comments. Remember to change it in your environment.
+output_log(Message, Args=[]) ->
+    ShowLogs = application:get_env(hera, show_log, false), 
+    if 
+        ShowLogs -> 
+            io:format(Message,Args);
+        true -> 
+            ok
+    end.
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% API
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,7 +38,8 @@ calibrate({MBx,MBy,MBz}) ->
 
 init(R0) ->
 
-    io:format("An e11 process is being init!~n"),
+    % For debugging purposes.
+    output_log("An e11 process is being init!~n",[]),
 
     Spec = #{
         name => ?MODULE,
@@ -40,7 +54,8 @@ init(R0) ->
 
 measure({T0, X0, P0, R0}) ->
 
-    io:format("hera_measure called me: I am nav3:measure!~n"),
+    % For debugging purposes.
+    output_log("hera_measure called me: I am e11:measure!~n",[]),
 
     DataNav = hera_data:get(nav3, sensor_fusion@nav_1),
     T1 = hera:timestamp(),

@@ -18,7 +18,7 @@ shell:
 
 # run_local: start sensor_fusion in release mode (clean start)
 run_local:
-	./_build/computer/rel/sensor_fusion/bin/sensor_fusion console
+	./_build/computer/rel/sensor_fusion/bin/sensor_fusion console # Should change computer by grisp?
 
 # local_release: build sensor_fusion in release mode for the computer
 local_release:
@@ -41,3 +41,11 @@ rm_logs:
 # clean: remove build files
 clean:
 	@rm -rf ./_build
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	
+# push: push the updated code for hera from another folder
+push:
+	@cd home/nicolas/TFE/hera; \
+	@git add * 
+	

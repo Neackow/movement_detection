@@ -189,6 +189,8 @@ Should not pose that much of a problem since nothing ever changes on this, so ei
 Added the variable both to my computer env and the Hera env.
 Beware, again: the _build folder (in hera and movement_detection) contains the previous version of the configuration files. Whenever you change something in the config files, remove these folders. SHOULD HAVE BEEN AUTOMATISED.
 Note: the _build in hera is due to me compiling it manually to verify if everything is fine. It is not really important. What is important is the version you can find in the _build folder of the movement_detection app.
+This however takes MUCH MORE TIME to compile. So, if it is only a question of Erlang code, rebar3 compile is better than a full build. It will be important to explain.
+Actually, what is important? A full build all the time? Just a compilation? It really is not clear.
 
 About rebar.lock : rebar.lock is where the version of dependencies are locked. This way our builds are reproducible, meaning if no code has been changed in a repository, the build on the repo should always have the same result (https://github.com/erlang/rebar3/issues/2604). So deleting this file (in my case, renaming it as olDrebar.lock) is not really a problem.
 

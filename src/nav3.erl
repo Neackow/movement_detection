@@ -7,6 +7,19 @@
 
 -record(cal, {gyro, mag}).
 
+
+% Decide whether or not to print the comments. Remember to change it in your environment.
+output_log(Message, Args=[]) ->
+    ShowLogs = application:get_env(hera, show_log, false), 
+    if 
+        ShowLogs -> 
+            io:format(Message,Args);
+        true -> 
+            ok
+    end.
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% API
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,7 +43,8 @@ calibrate() ->
 
 init(C) ->
 
-    io:format("A nav3 process is being init!~n"),
+    % For debugging purposes.
+    output_log("A nav3 process is being init!~n",[]),
 
     Spec = #{
         name => ?MODULE,
@@ -42,7 +56,8 @@ init(C) ->
 
 measure(C=#cal{gyro={GBx,GBy,GBz}, mag={MBx,MBy,MBz}}) ->
 
-    io:format("hera_measure called me: I am nav3:measure!~n"),
+    % For debugging purposes.
+    output_log("hera_measure called me: I am nav3:measure!~n",[]),
 
     [Ax,Ay,Az, Gx,Gy,Gz] = pmod_nav:read(acc, [
         out_x_xl,out_y_xl,out_z_xl,
