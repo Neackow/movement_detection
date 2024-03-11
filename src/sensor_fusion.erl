@@ -7,6 +7,19 @@
 -export([update_code/2, update_code/3]).
 -export([start/2, stop/1]).
 
+
+
+% Decide whether or not to print the comments. Remember to change it in your environment.
+output_log(Message, Args=[]) ->
+    ShowLogs = application:get_env(hera, show_log, false), 
+    if 
+        ShowLogs -> 
+            io:format(Message,Args);
+        true -> 
+            ok
+    end.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% API
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,11 +136,13 @@ launch(nav) -> % This is the function called by sensor_fusion:launch() when we a
     % {ok,_} = hera:start_measure(nav, Cn),
     % {ok,_} = hera:start_measure(mag, Cm),
 
-    io:format("I'm calling hera:start_measure(nav3, Cn)~n"),
+    % For debugging purposes.
+    output_log("I'm calling hera:start_measure(nav3, Cn)~n",[]),
 
     {ok,_} = hera:start_measure(nav3, Cn),              % Starts a measure process from Hera. 
 
-    io:format("I'm calling hera:start_measure(e11, R0)~n"),
+    % For debugging purposes.
+    output_log("I'm calling hera:start_measure(e11, R0)~n",[]),
 
     {ok,_} = hera:start_measure(e11, R0),               
     ok;
