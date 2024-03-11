@@ -1,0 +1,28 @@
+# Adapted from: https://mrkandreev.name/snippets/gitignore-generator/#Erlang
+
+.eunit
+*.o
+*.beam
+*.plt
+erl_crash.dump
+.concrete/DEV_MODE
+
+# rebar 2.x
+.rebar
+rel/example_project
+ebin/*.beam
+deps
+
+# rebar 3
+.rebar3
+_build/
+_checkouts/
+rebar3.crashdump
+
+#logs
+/logsL
+/measures/
+
+_grisp
+.vscode
+
