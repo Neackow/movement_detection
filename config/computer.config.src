@@ -1,7 +1,8 @@
 [
 {hera, [
     {log_data, true},
-    {show_log, false}
+    {show_log, false},
+    {show_log_spec,true}
 ]},
 
 {kernel, [
