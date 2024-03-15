@@ -72,6 +72,8 @@ The given name in itself should not a problem (IT IS), since it takes the "env.N
 For the first GRiSP, beware that the MyCookie is set by default and that the project name should be sensor_fusion.
 You can indeed see in the makefile under the "remote shell" part that it calls sensor_fusion.
 
+Beware: if you want to connect over wifi, do not q(). the Erlang VM before leaving picocom as I mentioned earlier. Modify that.
+
 
 ********************* Added on 04/03. A lot of it are just notes, maybe not especially important for everybody.
 
@@ -180,23 +182,98 @@ If you have the brilliant idea, as I did, to take every repository referred to i
 You should have everything working now !
 
 
-10/03: to make it work (it was not working because log_data was at false, despite hardcoding its value to true), remove rebar.lock (by renaming it) and in Hera folders, check everywhere for this configuration (NOT ONLY in the main folder, as mentioned in the original tutorial. This only works for when you start the app on your computer. But if you start it on the GRiSP, you need to modify the hera version). Typically: hera/ebin -> hera.app and hera/src -> hera.app.src. Push every changes to your git repositories.
+10/03: to make it work (it was not working because log_data was at false, despite hardcoding its value to true), remove rebar.lock (by renaming it or straight up removing it) and in Hera folders, check everywhere for this configuration (NOT ONLY in the main folder, as mentioned in the original tutorial. This only works for when you start the app on your computer. But if you start it on the GRiSP, you need to modify the hera version). Typically: hera/ebin -> hera.app and hera/src -> hera.app.src. Push every changes to your git repositories, make sure no rebar.lock still exists, delete for good measure the _build and _grisp folders everywhere you find one, and all your changes will appear in the newly built version.
+
 
 11/03: attempting to add an environment variable to get the comments to show on will. 
 Had this message again: ===> Skipping hera_synchronization (from {git,"https://github.com/Neackow/hera_synchronization",
                                 {ref,"6730a2f56694961cc1c4b75e2d3e8737b469eeb8"}}) as an app of the same name has already been fetched
 Should not pose that much of a problem since nothing ever changes on this, so either version works (sebkm or mine). 
+
 Added the variable both to my computer env and the Hera env.
+
 Beware, again: the _build folder (in hera and movement_detection) contains the previous version of the configuration files. Whenever you change something in the config files, remove these folders. SHOULD HAVE BEEN AUTOMATISED.
+
 Note: the _build in hera is due to me compiling it manually to verify if everything is fine. It is not really important. What is important is the version you can find in the _build folder of the movement_detection app.
-This however takes MUCH MORE TIME to compile. So, if it is only a question of Erlang code, rebar3 compile is better than a full build. It will be important to explain.
-Actually, what is important? A full build all the time? Just a compilation? It really is not clear.
+
+This however takes MUCH MORE TIME to compile. So, if it is only a question of Erlang code, rebar3 compile is better than a full build. It will be important to explain. But actually, what is important? A full build all the time? Just a compilation? It really is not clear.
 
 About rebar.lock : rebar.lock is where the version of dependencies are locked. This way our builds are reproducible, meaning if no code has been changed in a repository, the build on the repo should always have the same result (https://github.com/erlang/rebar3/issues/2604). So deleting this file (in my case, renaming it as olDrebar.lock) is not really a problem.
+This often causes problems to me. It reappears when I build and if I forget to remove it, it will waste 15 minutes of my life, waiting for a build that is not taking the last modifications into account. Do not forget to remove it (or it may have been automatised).
 
 
 %% NOTE TO SELF %%
 If I automatised everything (the build folders and all) during the build, then I should specify in the doc the folder organisation.
+%% END OF NOTE %%
+
+About make local_release && make run_local commands: I have a NIF problem: numerl.so is not loading, and apparently, according to Sébastien Kalbusch (Hera developper from 2021), it is normal and if I wanted to have the possibility of running the code directly on my console, the NIF should be discarded on my computer. Which is a problem, since I need it. To have the logs directly appearing on my computer and not having to remove the SD card continuously, I should deal with that.
+
+
+While looking at which code to modify, I noticed that in sensor_fusion.app.src, modules were present. I do not know if it is done automatically or if I will have to add modules there.
+At the end of Lunelis' README, one can see that it is easy to add a sensor_fusion model or a new library. I do believe that the new sensor_fusion model must be added in the .app file to be taken into account, however.
+
+
+Also today: merging the code for the numerl version (updated math version) and the movement detection thesis. In the version from numerl, many functions were adapted to the mathematically updated version (typically, by checking the differences between e11.erl with and without nurmerl, we see less calls to the "mat" module and more "matrix operations in Erlang" operations). To keep in mind if I find a problem.
+
+
+Upon launching the sensor_fusion:launch()., if I give him enough time, I will have the following error:
+
+=SUPERVISOR REPORT==== 1-Jan-1988::00:01:20.066604 ===
+    supervisor: {local,hera_measure_sup}
+    errorContext: child_terminated
+    reason: {timeout,{gen_server,call,
+                                 [hera_data,{get,nav3,sensor_fusion@nav_1}]}}
+    offender: [{pid,<0.385.0>},
+               {id,hera_measure},
+               {mfargs,
+                   {hera_measure,start_link,
+                       [e11,
+                        {matrix,3,3,
+                            <<253,168,110,218,106,48,172,63,190,161,71,1,
+                              146,243,239,63,222,79,74,34,65,146,80,63,212,
+                              184,202,24,194,240,239,191,23,122,32,176,105,
+                              49,172,63,226,233,37,238,228,207,154,191,111,
+                              5,105,94,20,212,154,191,55,15,220,168,116,80,
+                              60,63,23,2,106,234,47,253,239,63>>}]}},
+               {restart_type,transient},
+               {significant,false},
+               {shutdown,5000},
+               {child_type,worker}]
+               
+While it does not seem to be a problem, since it restarts a hera_measure process right after, why do I have this? Also, I get the same type of error upon launching sensor_fusion:realtime_once().:
+
+sensor_fusion:realtime_once().
+Start Realtime with 10 seconds for the gesture
+** exception exit: {timeout,
+                       {gen_server,call,
+                           [hera_data,{get,nav3,sensor_fusion@nav_1}]}}
+     in function  gen_server:call/2 (gen_server.erl, line 370)
+     in call from realtime:start/3 (/home/nicolas/TFE/movement_detection/src/realtime.erl, line 10)
+     
+And I don't really know what to do about it. From (https://learnyousomeerlang.com/clients-and-servers#callback-to-the-future) : The TimeOut variable is meant to be added to the tuple whenever you need a deadline before which you expect the server to receive a message. If no message is received before the deadline, a special one (the atom timeout) is sent to the server, which should be handled with handle_info/2.
+
+We work here with synchronous messages. From this forum (https://stackoverflow.com/questions/61618091/why-does-gen-server-get-timeout), maybe I should try and implement a handle_info(), but the fact is that we are calling from the outside world, so I don't know if it is important. This page says that the things timeout because of {noreply,_,_} but here, it is set to {reply,_,_}.
+The default timeout is 5 seconds, which is what is observed in practice.
+
+This (https://blog.differentpla.net/blog/2019/09/21/gen_server-timeout/) mentions a coding solution. Maybe too much.
+
+I did some prints in the handle_call function. This lead to the observation that it appears to work up until a certain point, by which I mean it looped several time before reaching a sort of "dead-end" where it was sending the reply and then after 5 seconds it would crash. 
+
+13/03: We added printing the [Res] parameter, to check what it is.
+A frequent warning I get is: *WARNING* Missing application sasl. Can not upgrade with this release. Problem?
+
+
+15/03: 
+Today, as I will need an ESP32 acting as a micro-controller for the computer, I decided to install everything required. You can either code via Platformio on VSCode (tbh, I do not recommand, it seems a little bit shaky on my computer... It works, but not really intuitive) or you can go with the Arduino IDE.
+First, install the Arduino IDE (follow the tutorial from this link: https://docs.arduino.cc/software/ide-v2/tutorials/getting-started/ide-v2-downloading-and-installing/)
+Next, follow this tutorial: https://bromleysat.com/installing-the-esp32-board-in-arduino-ide
+I encountered several problems:
+	- The PySerial was not installed. I had to add it to have the tutorial from the link above working: https://www.geeksforgeeks.org/how-to-install-python-serial-package-on-linux/
+	- I struggled with my port (dev/ttyUSB0). I followed what was on this link : https://askubuntu.com/questions/133235/how-do-i-allow-non-root-access-to-ttyusb0
+		I just did the sudo usermod -a -G dialout $USER thing and restarted my computer. The port problem was then gone.
+	- The board that I have is a NodeMCU-32S, not a DOIT ESP32 DEVKIT V1 like in the tutorial. Beware of the version you have. I bought mine here (if you want to have the same board, so NodeMCU-32S) : https://www.amazon.com.be/dp/B07S1GGM35?ref_=pe_43847721_708903971_E_301_dt_1
+	- Still regarding the ports, you may have a port problem if you do not have the driver UART-USB cp120x installed. On Ubuntu, it should be by default. If not, you can follow this : https://askubuntu.com/questions/941594/installing-cp210x-driver
+
 
 
 
@@ -229,5 +306,8 @@ Then, in rebar.config, instead of {docker, "grisp/grisp2-rtems-toolchain"}, put 
 (e.g. for me: {directory, "/home/nicolas/TFE/grisp2-rtems-toolchain/rtems/5"}). 
 You should now be able to compile sensor_fusion. Go to the directory and type "rebar3 grisp build". Again, this will take a while.
 Then, I used the make file as Lucas Nélis did and deployed it.
+
+
+
 ~~~~~~~
 See other file for some other additions.
