@@ -273,6 +273,16 @@ I encountered several problems:
 		I just did the sudo usermod -a -G dialout $USER thing and restarted my computer. The port problem was then gone.
 	- The board that I have is a NodeMCU-32S, not a DOIT ESP32 DEVKIT V1 like in the tutorial. Beware of the version you have. I bought mine here (if you want to have the same board, so NodeMCU-32S) : https://www.amazon.com.be/dp/B07S1GGM35?ref_=pe_43847721_708903971_E_301_dt_1
 	- Still regarding the ports, you may have a port problem if you do not have the driver UART-USB cp120x installed. On Ubuntu, it should be by default. If not, you can follow this : https://askubuntu.com/questions/941594/installing-cp210x-driver
+	
+	
+16/03: REMINDER: add your wpa.supplicant.conf to your gitignore. 
+Added make hera_push: this is to run a bash script to push with your password and username on your git repo. Modify it to have your credentials. The bash script should be put in gitignore aswell, as you will have your credentials in it. 
+If you want to create your own bash, feel free. But do not forget to do "chmod +x bashFileName.sh" to add execution rights.
+Safer option: instead of your password, use something like: $ENVVAR and set the env variable with export ENVVAR=yourpassword. This ONLY WORKS in your current shell session, just like the rebar3 variable. Remember to always do the 3 commands upon starting a shell.
+
+I also added a build command in the makefile, to automatically build and deploy on the card of choice. It strangely does not work, however. Probably because it happens in a shell of its own, and that I do not have the right rights in that shell.
+
+DO NOT FORGET: whenever you change something to your Hera, always remove the _build and _grisp files from the build. Or you'll waste 15 minutes of your life.
 
 
 
