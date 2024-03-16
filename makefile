@@ -45,7 +45,12 @@ clean:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	
 # push: push the updated code for hera from another folder
-push:
-	@cd home/nicolas/TFE/hera; \
-	@git add * 
+# Call it with make COMMIT="blablabla" push_hera
+push_hera:
+	./pushHera.sh "$(COMMIT)"
+	
+build-%:
+	rm -rf ./_build
+	rm -rf ./_grisp
+	rebar3 grisp build && NAME=$* rebar3 grisp deploy -n sensor_fusion -v 1.0.0
 	
