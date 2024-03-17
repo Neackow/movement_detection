@@ -23,14 +23,13 @@ output_log(Message, Args=[]) ->
 % Decide whether or not to print the comments. Remember to change it in your environment.
 output_log_spec(Message, Args) ->
     {{Year, Month, Day}, {Hour, Min, Sec}} = calendar:now_to_datetime(erlang:timestamp()),
-    DisplayedTime = list_to_binary(io_lib:format("~.4.0w-~.2.0w-~.2.0wT~.2.0w:~.2.0w:~.2.0w.0+00:00", [Year, Month, Day, Hour, Min, Sec])),
+    DisplayedTime = list_to_binary(io_lib:format("~.2.0w:~.2.0w:~.2.0w", [Hour, Min, Sec])),
 
     ShowLogs = application:get_env(hera, show_log_spec, false), 
     if
         ShowLogs -> 
             if Args == [] ->
-                io:format("[~p]: ", [DisplayedTime]),
-                io:format(Message);
+                io:format("~p: ~p.~n",[DisplayedTime, Message]);
                true -> 
                 io:format("[~p]: ", [DisplayedTime]),
                 io:format(Message, Args)
@@ -74,7 +73,7 @@ init(R0) ->
 measure({T0, X0, P0, R0}) ->
 
     % For debugging purposes.
-    output_log("hera_measure called me: I am e11:measure!~n",[]),
+    output_log_spec("hera_measure called me: I am e11:measure!~n",[]),
 
     DataNav = hera_data:get(nav3, sensor_fusion@nav_1),
     T1 = hera:timestamp(),
@@ -110,7 +109,7 @@ measure({T0, X0, P0, R0}) ->
                 true ->
                     kalman:kf_update({Xp, Pp}, H, R, Z);
                 false ->
-                    Y = kalman:kf_update({mat:'*'(-1,Xp), Pp}, H, R, Z)
+                    kalman:kf_update({mat:'*'(-1,Xp), Pp}, H, R, Z)
             end,
 
             % {X1, P1} = {Xp, Pp}, % gyro only
