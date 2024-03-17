@@ -288,6 +288,14 @@ DO NOT FORGET: whenever you change something to your Hera, always remove the _bu
 I modified the push_hera version to also clean the _grisp and _build folders, to do all in one command.
 If you prefer calling a separate command, make clear is still there.
 
+(do an erratum with the typical error that I encounter)
+BEWARE: you cannot print "Message + "some text"" in a io:format, if Message is an argument.
+Also: badmatch: if you added print, maybe you stopped the return of the function itself, and thus, it doesn't find the new value. You can : store the return value in a variable, print, then return the variable.
+
+We verified the time dependency of e11, because we realised it crashed after 3 measures (with the default timeout of 5 seconds. 10 seconds: crashed after 4. 60 seconds : crashed after 6). The time evolution between 2 iterations of e11:measure is globally looking like N²*log(N).
+Checking if the culprit was Kalman, the answer in no.
+
+We also discarded the hypothesis that the PMOD_NAV was taking to much time.
 
 
 

@@ -20,6 +20,25 @@ output_log(Message, Args=[]) ->
     end.
 
 
+% Decide whether or not to print the comments. Remember to change it in your environment.
+output_log_spec(Message, Args) ->
+    {{Year, Month, Day}, {Hour, Min, Sec}} = calendar:now_to_datetime(erlang:timestamp()),
+    DisplayedTime = list_to_binary(io_lib:format("~.4.0w-~.2.0w-~.2.0wT~.2.0w:~.2.0w:~.2.0w.0+00:00", [Year, Month, Day, Hour, Min, Sec])),
+
+    ShowLogs = application:get_env(hera, show_log_spec, false), 
+    if
+        ShowLogs -> 
+            if Args == [] ->
+                io:format("[~p]: ", [DisplayedTime]),
+                io:format(Message);
+               true -> 
+                io:format("[~p]: ", [DisplayedTime]),
+                io:format(Message, Args)
+            end;
+        true -> 
+            ok
+    end.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% API
@@ -68,7 +87,6 @@ measure({T0, X0, P0, R0}) ->
 
             R1 = ahrs(Acc, Mag),
             Quat = dcm2quat(mat:'*'(R1, R0)),
-            
             % {ok, Quat, {T1, X0, P0, R0}} % acc_mag only
 
             Dt = (T1-T0)/1000,
@@ -80,18 +98,19 @@ measure({T0, X0, P0, R0}) ->
                 [-Wy,Wz,0,-Wx],
                 [-Wz,-Wy,Wx,0]
             ]),
+
             F = mat:'+'(mat:eye(4), mat:'*'(0.5*Dt, Omega)),
             Q = mat:diag([?VAR_Q,?VAR_Q,?VAR_Q,?VAR_Q]),
             H = mat:eye(4),
             Z = mat:tr(Quat),
             R = mat:diag([?VAR_R,?VAR_R,?VAR_R,?VAR_R]),
-
             {Xp, Pp} = kalman:kf_predict({X0,P0}, F, Q),
+
             {X1, P1} = case qdot(Z, Xp) > 0 of
                 true ->
                     kalman:kf_update({Xp, Pp}, H, R, Z);
                 false ->
-                    kalman:kf_update({mat:'*'(-1,Xp), Pp}, H, R, Z)
+                    Y = kalman:kf_update({mat:'*'(-1,Xp), Pp}, H, R, Z)
             end,
 
             % {X1, P1} = {Xp, Pp}, % gyro only

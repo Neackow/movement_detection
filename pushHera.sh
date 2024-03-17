@@ -11,3 +11,4 @@ cd ~/TFE/movement_detection
 pwd
 rm -rf ./_build
 rm -rf ./_grisp
+rm -f rebar.lock # F*CK YOU REBAR.LOCK
