@@ -284,6 +284,10 @@ I also added a build command in the makefile, to automatically build and deploy 
 
 DO NOT FORGET: whenever you change something to your Hera, always remove the _build and _grisp files from the build. Or you'll waste 15 minutes of your life.
 
+16/03: STILL AT IT, that freacking timeout.
+I modified the push_hera version to also clean the _grisp and _build folders, to do all in one command.
+If you prefer calling a separate command, make clear is still there.
+
 
 
 

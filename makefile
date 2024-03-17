@@ -45,7 +45,7 @@ clean:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	
 # push: push the updated code for hera from another folder
-# Call it with make COMMIT="blablabla" push_hera
+# Call it with make push_hera COMMIT="yourcomment"
 push_hera:
 	./pushHera.sh "$(COMMIT)"
 	

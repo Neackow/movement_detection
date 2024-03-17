@@ -14,10 +14,7 @@
     	sensor_fusion, sensor_fusion_sup,
     	sonar, nav, nav3, mag, bilateration,
     	e4, e5, e6, e7, e8, e9, e10, e11,
-
-	% To take into account the files for movement detection.
 	classify, csvparser, learn, realtime,
-
         measure_counter, killer        
     ]},
     {maintainers, []},
