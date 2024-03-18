@@ -296,6 +296,15 @@ We verified the time dependency of e11, because we realised it crashed after 3 m
 Checking if the culprit was Kalman, the answer in no.
 
 We also discarded the hypothesis that the PMOD_NAV was taking to much time.
+We checked many culprits. Everytime, it seemed like we were getting close, but yet, not finding anything.
+
+
+17/03: 
+ALL GPIO PINS can be used as interrupt on ESP32.
+ALL GPIO PINS OK FOR OUTPUT can be used for PWM on ESP32.
+The code for the interrupt can be tagged with IRAM_ATTR to be stored in the RAM, instead of FLASH.
+
+Beware : if you did not detect the socket, the sensor_fusion:launch() will not work. Check the console to see if you did find it. 
 
 
 
