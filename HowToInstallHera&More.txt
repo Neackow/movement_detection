@@ -306,6 +306,8 @@ The code for the interrupt can be tagged with IRAM_ATTR to be stored in the RAM,
 
 Beware : if you did not detect the socket, the sensor_fusion:launch() will not work. Check the console to see if you did find it. 
 
+18/03: the problem was logging the data into the files, this is what was taking time. A new gen_server behaviour is being created to deal with that.
+
 
 
 _______________________________________________________________________________

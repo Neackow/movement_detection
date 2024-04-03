@@ -10,7 +10,7 @@
 
 
 % Decide whether or not to print the comments. Remember to change it in your environment.
-output_log(Message, Args=[]) ->
+output_log(Message, Args) ->
     ShowLogs = application:get_env(hera, show_log, false), 
     if 
         ShowLogs -> 
@@ -29,10 +29,10 @@ output_log_spec(Message, Args) ->
     if
         ShowLogs -> 
             if Args == [] ->
-                io:format("~p: ~p.~n",[DisplayedTime, Message]);
+                io:format("[~p]: ~p.~n",[DisplayedTime, Message]);
                true -> 
-                io:format("[~p]: ", [DisplayedTime]),
-                io:format(Message, Args)
+                FullMessage = "[~p]: " ++ Message,
+                io:format(FullMessage, [DisplayedTime|Args])
             end;
         true -> 
             ok
@@ -69,28 +69,34 @@ init(R0) ->
     State = {hera:timestamp(), X, P, R0},
     {ok, State, Spec}.
 
+% It appears that the ekf is not used here. It is a Kalman filter (linear version) based on quaternion representation.
+% As the article it is based on suggests: "[...] a novel linear Kalman filter, suitable for nonlinear attitude estimation, [...]"
 
 measure({T0, X0, P0, R0}) ->
 
     % For debugging purposes.
-    output_log_spec("hera_measure called me: I am e11:measure!~n",[]),
+    output_log_spec("e11:measure!~n",[]),
 
     DataNav = hera_data:get(nav3, sensor_fusion@nav_1),
     T1 = hera:timestamp(),
     Nav = [Data || {_,_,Ts,Data} <- DataNav, T0 < Ts, T1-Ts < 500],
     if
         length(Nav) == 0 ->
+            output_log_spec("e11:measure finished with undefined~n",[]),
             {undefined, {T0, X0, P0, R0}};
         true ->
             {Acc, Gyro, Mag} = process_nav(Nav),
 
             R1 = ahrs(Acc, Mag),
-            Quat = dcm2quat(mat:'*'(R1, R0)),
+            Quat = dcm2quat(mat:'*'(R1, R0)),   % This is never truly explained in the TFEs. The way I get it: we get the orientation by multiplying the original calibration orientation
+                                                % and the current orientation matrix, in DCM format. 
             % {ok, Quat, {T1, X0, P0, R0}} % acc_mag only
 
             Dt = (T1-T0)/1000,
             [Wx,Wy,Wz] = Gyro,
 
+            % Regarding the sign: it is the opposite of what the article it is based on says. 
+            % According to Sébastien Kalbusch, he has found experimentally that -Omega was better than the Omega from the article.
             Omega = mat:matrix([
                 [0,Wx,Wy,Wz],
                 [-Wx,0,-Wz,Wy],
@@ -99,13 +105,13 @@ measure({T0, X0, P0, R0}) ->
             ]),
 
             F = mat:'+'(mat:eye(4), mat:'*'(0.5*Dt, Omega)),
-            Q = mat:diag([?VAR_Q,?VAR_Q,?VAR_Q,?VAR_Q]),
+            Q = mat:diag([?VAR_Q,?VAR_Q,?VAR_Q,?VAR_Q]), % Not squared ? Indeed, because the value is already sigma_Q².
             H = mat:eye(4),
             Z = mat:tr(Quat),
             R = mat:diag([?VAR_R,?VAR_R,?VAR_R,?VAR_R]),
             {Xp, Pp} = kalman:kf_predict({X0,P0}, F, Q),
 
-            {X1, P1} = case qdot(Z, Xp) > 0 of
+            {X1, P1} = case qdot(Z, Xp) > 0 of % This is to get the shortest path for the estimation.
                 true ->
                     kalman:kf_update({Xp, Pp}, H, R, Z);
                 false ->
@@ -116,6 +122,7 @@ measure({T0, X0, P0, R0}) ->
             
             Values = unit(mat:to_array(X1)),
             X1Norm = mat:matrix([[X] || X <- Values]),
+            output_log_spec("e11:measure finished with ok and values ~p ~n",[Values]),
             {ok, Values, {T1, X1Norm, P1, R0}}
     end.
 
@@ -153,6 +160,7 @@ calibrate(Comp, Registers, N) ->
 
 % Acc, Mag : arrays
 % returns a mat matrix
+% This basically returns the DCM matrix, or something close to that form, depending on when it is called.
 ahrs(Acc, Mag) ->
     Down = unit([-A || A <- Acc]),
     East = unit(cross_product(Down, unit(Mag))),
@@ -165,6 +173,7 @@ cross_product([U1,U2,U3], [V1,V2,V3]) ->
 
 
 % returns mat matrix
+% Eq. 2.15 of TFE Sébastien Kalbusch.
 dcm2quat(R) ->
     [R11,R12,R13,R21,R22,R23,R31,R32,R33] = mat:to_array(R),
     Q12 = 0.25*(1+R11+R22+R33),
