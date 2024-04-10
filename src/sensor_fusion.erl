@@ -20,6 +20,23 @@ output_log(Message, Args) ->
             ok
     end.
 
+output_log_spec(Message, Args) ->
+    {{Year, Month, Day}, {Hour, Min, Sec}} = calendar:now_to_datetime(erlang:timestamp()),
+    DisplayedTime = list_to_binary(io_lib:format("~.2.0w:~.2.0w:~.2.0w", [Hour, Min, Sec])),
+
+    ShowLogs = application:get_env(hera, show_log_spec, false), 
+    if
+        ShowLogs -> 
+            if Args == [] ->
+                io:format("[~p]: ~p.~n",[DisplayedTime, Message]);
+               true -> 
+                FullMessage = "[~p]: " ++ Message,
+                io:format(FullMessage, [DisplayedTime|Args])
+            end;
+        true -> 
+            ok
+    end.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% API
@@ -62,7 +79,8 @@ launch() -> % Calling this function will lead to the launch of the correct funct
 
 
 launch_all() ->
-    rpc:multicall(?MODULE, launch, []).
+    rpc:multicall(?MODULE, launch, []). % rpc:multicall/3 is equivalent to multicall([node()|nodes()], Module, Function, Args, infinity).
+% This will start the function 'launch' of the module sensor_fusion in every node connected to the network of boards.
 
 
 stop_all() ->
