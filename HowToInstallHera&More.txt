@@ -310,6 +310,8 @@ Beware : if you did not detect the socket, the sensor_fusion:launch() will not w
 
 
 
+
+10/04 : net_ticktime : parameter from the makefile in the remote : TickInterval = NetTickTime/NetTickIntensity. Once every TickInterval seconds, each connected node is ticked if nothing has been sent to it during that last TickInterval seconds. A tick is a small package sent on the connection. A connected node is considered to be down if no ticks or payload packages have been received during the last NetTickIntensity number of TickInterval seconds intervals. This ensures that nodes that are not responding, for reasons such as hardware errors, are considered to be down.
 _______________________________________________________________________________
 
 
