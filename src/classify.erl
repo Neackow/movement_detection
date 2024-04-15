@@ -32,7 +32,9 @@ classify_new_gesture(List) ->
 
     {Name, Accuracy} = compare_gesture(NewX, NewY, NewZ, List_gestures),
 
-    % C'EST ICI QUE JE POURRAIS ENVOYER PAR RPC:CALL.
+    % Here: call the function from the other GRiSP to send the movement.
+    rpc:call(sensor_fusion@orderCrate, hera_sendOrder, set_state_crate, [Name]),
+
     % print the result of the classification
     if Accuracy >= 0.5 ->
         io:format("Name : ~p, with Acc : ~p~n", [Name, Accuracy]);

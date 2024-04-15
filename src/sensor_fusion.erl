@@ -66,15 +66,20 @@ set_args(sonar, RangeMax, X, Y) ->
     update_table({{sonar, node()}, {RangeMax,X,Y}}).
 
 
-launch() -> % Calling this function will lead to the launch of the correct function: either a nav or a sonar one.
-    try launch(node_type()) of
-        ok -> % This will be sent if the calibration data is present. Otherwise, red leds.
-            [grisp_led:color(L, green) || L <- [1, 2]],
-            ok
-    catch
-        error:badarg ->
-            [grisp_led:color(L, red) || L <- [1, 2]],
-            {error, badarg}
+launch() -> % Calling this function will lead to the launch of the correct function: either a nav or a sonar one. ADDED 2024: or an order board.
+    case node_type() of
+        order -> % If we have an "order" board, then do not try to launch the measurement.
+            ok;
+        _ ->
+            try launch(node_type()) of
+                ok -> % This will be sent if the calibration data is present. Otherwise, red leds.
+                    [grisp_led:color(L, green) || L <- [1, 2]],
+                    ok
+            catch
+                error:badarg ->
+                    [grisp_led:color(L, red) || L <- [1, 2]],
+                    {error, badarg}
+            end
     end.
 
 
@@ -151,6 +156,8 @@ start(_Type, _Args) ->
         sonar ->
             _ = grisp:add_device(uart, pmod_maxsonar),
             pmod_maxsonar:set_mode(single);
+        order ->                                    % At start, launch the supervisor. It is independent of hera.
+            _ = hera_sendOrder_sup:start_link();
         _ -> % needed when we use make shell
             _ = net_kernel:set_net_ticktime(8),
             lists:foreach(fun net_kernel:connect_node/1,
@@ -170,9 +177,11 @@ node_type() ->
     Host = lists:nthtail(14, atom_to_list(node())), % Returns the actual node, so here, sensor_fusion@nav_1. It returns AFTER the 14th element, meaning the @.
     IsNav = lists:prefix("nav", Host),              % Detects the nav in the name.
     IsSonar = lists:prefix("sonar", Host),
+    IsOrder = lists:prefix("orderCrate", Host),
     if
         IsNav -> nav;
         IsSonar -> sonar;
+        IsOrder -> order;   % Need to detect if the board is an order one.
         true -> undefined
     end.
 
