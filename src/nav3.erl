@@ -35,6 +35,7 @@ calibrate() ->
     BiasX = 0.5*(Mx1+Mx2),
     BiasY = 0.5*(My1+My2),
     BiasZ = 0.5*(Mz1+Mz2),
+    io:format("Result of calibration: gyro=[~p,~p,~p] and mag=[~p,~p,~p].~n", [Gx,Gy,Gz,BiasX,BiasY,BiasZ]),
     #cal{gyro={Gx,Gy,Gz}, mag={BiasX,BiasY,BiasZ}}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,7 +50,7 @@ init(C) ->
     Spec = #{
         name => ?MODULE,
         iter => infinity,
-        timeout => 1
+        timeout => 0
     },
     {ok, C, Spec}.
 
@@ -59,12 +60,13 @@ measure(C=#cal{gyro={GBx,GBy,GBz}, mag={MBx,MBy,MBz}}) ->
     % For debugging purposes.
     output_log("hera_measure called me: I am nav3:measure!~n",[]),
 
+    % See https://hexdocs.pm/grisp/ where in fact, the gyroscope AND accelerometer are accessed via acc.
     [Ax,Ay,Az, Gx,Gy,Gz] = pmod_nav:read(acc, [
         out_x_xl,out_y_xl,out_z_xl,
         out_x_g,out_y_g,out_z_g]),
     Acc = [Ax,Ay,-Az],
     Gyro = [Gx-GBx,Gy-GBy,-(Gz-GBz)],
-    [Mx,My,Mz] = pmod_nav:read(mag, [out_x_m, out_y_m, out_z_m]),
+    [Mx,My,Mz] = pmod_nav:read(mag, [out_x_m, out_y_m, out_z_m]),  
     Data = lists:append([
         scale(Acc, 9.81),
         scale(Gyro, math:pi()/180),

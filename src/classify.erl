@@ -32,6 +32,7 @@ classify_new_gesture(List) ->
 
     {Name, Accuracy} = compare_gesture(NewX, NewY, NewZ, List_gestures),
 
+    % C'EST ICI QUE JE POURRAIS ENVOYER PAR RPC:CALL.
     % print the result of the classification
     if Accuracy >= 0.5 ->
         io:format("Name : ~p, with Acc : ~p~n", [Name, Accuracy]);

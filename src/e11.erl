@@ -48,6 +48,7 @@ calibrate({MBx,MBy,MBz}) ->
     [Ax,Ay,Az] = calibrate(acc, [out_x_xl, out_y_xl, out_z_xl], 100),
     [Mx,My,Mz] = calibrate(mag, [out_x_m, out_y_m, out_z_m], 10),
     R0 = ahrs([Ax,Ay,-Az], [-(Mx-MBx),My-MBy,-(Mz-MBz)]),
+    io:format("Result for e11 calibration: R0=~p.~n",[[R0]]),
     mat:tr(R0).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

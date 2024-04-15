@@ -88,7 +88,7 @@ hera_sub(N) ->
     end,
     lists:foreach(Starter, Seq),
     if
-        node() == sensor_fusion@sebastien ->
+        node() == sensor_fusion@sebastien ->    % Isn't really useful. This was only to show ome inner working of Hera in the 2021's thesis.
             timer:sleep(5000),
             exit(global:whereis_name(hera_sub), killed),
             timer:sleep(5000),
@@ -107,7 +107,7 @@ hera_sync(N) ->
     end,
     lists:foreach(Starter, Seq),
     if
-        node() == sensor_fusion@sebastien ->
+        node() == sensor_fusion@sebastien ->    % Isn't really useful. This was only to show ome inner working of Hera in the 2021's thesis.
             Killer = fun(Name) ->
                 {ok, Pid} = hera_sub:subscribe(Name),
                 exit(Pid, killed)
