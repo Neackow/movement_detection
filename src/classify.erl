@@ -33,6 +33,8 @@ classify_new_gesture(List) ->
     {Name, Accuracy} = compare_gesture(NewX, NewY, NewZ, List_gestures),
 
     % Here: call the function from the other GRiSP to send the movement.
+    net_adm:ping(sensor_fusion@orderCrate), % To connect the node. I could do it only once, but since the same code is used on both GRiSP,
+                                            % the risk would be that GRiSP2 tries to connect... to GRiSP2. So, redo it here, it's no big deal.
     rpc:call(sensor_fusion@orderCrate, hera_sendOrder, set_state_crate, [Name]),
 
     % print the result of the classification
