@@ -14,7 +14,7 @@
     {sync_nodes_optional, [
         sensor_fusion@neackow_z4,
         sensor_fusion@nav_1,
-        sensor_fusion@nav_2
+        sensor_fusion@orderCrate
     ]},
 
     {sync_nodes_timeout, 5000},

@@ -157,7 +157,7 @@ start(_Type, _Args) ->
             _ = grisp:add_device(uart, pmod_maxsonar),
             pmod_maxsonar:set_mode(single);
         order ->                                    % At start, launch the supervisor. It is independent of hera.
-            _ = hera_sendOrder_sup:start_link();
+            _ = hera_sendOrder_sup:start_link();    % This supervisor is not supervised, thus, if the node goes down, it goes down.
         _ -> % needed when we use make shell
             _ = net_kernel:set_net_ticktime(8),
             lists:foreach(fun net_kernel:connect_node/1,
