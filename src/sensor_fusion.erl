@@ -195,12 +195,12 @@ launch(nav) -> % This is the function called by sensor_fusion:launch() when we a
     % {ok,_} = hera:start_measure(mag, Cm),
 
     % For debugging purposes.
-    output_log("I'm calling hera:start_measure(nav3, Cn)~n",[]),
+    %output_log("I'm calling hera:start_measure(nav3, Cn)~n",[]),
 
     {ok,_} = hera:start_measure(nav3, Cn),              % Starts a measure process from Hera. 
 
     % For debugging purposes.
-    output_log("I'm calling hera:start_measure(e11, R0)~n",[]),
+    %output_log("I'm calling hera:start_measure(e11, R0)~n",[]),
 
     {ok,_} = hera:start_measure(e11, R0),               
     ok;
