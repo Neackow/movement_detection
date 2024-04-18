@@ -45,7 +45,7 @@ calibrate() ->
 init(C) ->
 
     % For debugging purposes.
-    output_log("A nav3 process is being init!~n",[]),
+    %output_log("A nav3 process is being init!~n",[]),
 
     Spec = #{
         name => ?MODULE,
@@ -58,7 +58,7 @@ init(C) ->
 measure(C=#cal{gyro={GBx,GBy,GBz}, mag={MBx,MBy,MBz}}) ->
 
     % For debugging purposes.
-    output_log("hera_measure called me: I am nav3:measure!~n",[]),
+    %output_log("hera_measure called me: I am nav3:measure!~n",[]),
 
     % See https://hexdocs.pm/grisp/ where in fact, the gyroscope AND accelerometer are accessed via acc.
     [Ax,Ay,Az, Gx,Gy,Gz] = pmod_nav:read(acc, [

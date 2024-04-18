@@ -6,6 +6,7 @@
 {host, {192,168,43,32}, ["neackow_z4"]}.	% computer node on my phone.
 {host, {192,168,43,215}, ["nav_1"]}.		% First GRiSP board on my phone.
 {host, {192,168,43,6}, ["orderCrate"]}.	% Second GRiSP board on my phone.
+%{host, {192,168,43,6}, ["nav_2"]}.		% Second GRiSP board on my phone.
 %{host, {X,X,X,X}, ["nav_1"]}.
 
 % Do not monitor the hosts file

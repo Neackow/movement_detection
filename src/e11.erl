@@ -48,7 +48,7 @@ calibrate({MBx,MBy,MBz}) ->
     [Ax,Ay,Az] = calibrate(acc, [out_x_xl, out_y_xl, out_z_xl], 100),
     [Mx,My,Mz] = calibrate(mag, [out_x_m, out_y_m, out_z_m], 10),
     R0 = ahrs([Ax,Ay,-Az], [-(Mx-MBx),My-MBy,-(Mz-MBz)]),
-    io:format("Result for e11 calibration: R0=~p.~n",[[R0]]),
+    %io:format("Result for e11 calibration: R0=~p.~n",[[R0]]),
     mat:tr(R0).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -58,7 +58,7 @@ calibrate({MBx,MBy,MBz}) ->
 init(R0) ->
 
     % For debugging purposes.
-    output_log("An e11 process is being init!~n",[]),
+    %output_log("An e11 process is being init!~n",[]),
 
     Spec = #{
         name => ?MODULE,
@@ -76,14 +76,14 @@ init(R0) ->
 measure({T0, X0, P0, R0}) ->
 
     % For debugging purposes.
-    output_log_spec("e11:measure!~n",[]),
+    %output_log_spec("e11:measure!~n",[]),
 
     DataNav = hera_data:get(nav3, sensor_fusion@nav_1),
     T1 = hera:timestamp(),
     Nav = [Data || {_,_,Ts,Data} <- DataNav, T0 < Ts, T1-Ts < 500],
     if
         length(Nav) == 0 ->
-            output_log_spec("e11:measure finished with undefined~n",[]),
+            %output_log_spec("e11:measure finished with undefined~n",[]),
             {undefined, {T0, X0, P0, R0}};
         true ->
             {Acc, Gyro, Mag} = process_nav(Nav),
@@ -123,7 +123,7 @@ measure({T0, X0, P0, R0}) ->
             
             Values = unit(mat:to_array(X1)),
             X1Norm = mat:matrix([[X] || X <- Values]),
-            output_log_spec("e11:measure finished with ok and values ~p ~n",[Values]),
+            %output_log_spec("e11:measure finished with ok and values ~p ~n",[Values]),
             {ok, Values, {T1, X1Norm, P1, R0}}
     end.
 
