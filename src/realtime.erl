@@ -11,7 +11,7 @@ start(Type, Maxtime, Period) ->
     case Type of 
     once ->
         io:format("Countdown!~n"),
-        countdown(5),
+        countdown(2),
         io:format("StartTime : ~p~n", [StartTime]),
         collect_data_over_time(StartTime + Maxtime + 5000); % 5000 for the countdown
     loop ->
