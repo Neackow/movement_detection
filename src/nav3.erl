@@ -35,7 +35,7 @@ calibrate() ->
     BiasX = 0.5*(Mx1+Mx2),
     BiasY = 0.5*(My1+My2),
     BiasZ = 0.5*(Mz1+Mz2),
-    io:format("Result of calibration: gyro=[~p,~p,~p] and mag=[~p,~p,~p].~n", [Gx,Gy,Gz,BiasX,BiasY,BiasZ]),
+    %io:format("Result of calibration: gyro=[~p,~p,~p] and mag=[~p,~p,~p].~n", [Gx,Gy,Gz,BiasX,BiasY,BiasZ]),
     #cal{gyro={Gx,Gy,Gz}, mag={BiasX,BiasY,BiasZ}}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
