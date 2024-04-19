@@ -44,7 +44,7 @@
 [decelerate,y,o]
 [decelerate,z,nn,n,o,n,nn]
 [exitChangeSpeed,x,o,n,nn,n,o,p,pp,p,o]
-[exitChangeSpeed,y,o]	
+[exitChangeSpeed,y,o]
 [exitChangeSpeed,z,nn,n,o,n,nn,n,o,n,nn]
 [testingSpeed,x,o]
 [testingSpeed,y,o,p,pp,p,o]
