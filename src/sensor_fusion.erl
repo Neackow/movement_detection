@@ -38,9 +38,9 @@ output_log_spec(Message, Args) ->
     end.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% API
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     MODULE API     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% set the args for the nav and mag modules
 set_args(nav) ->
@@ -113,7 +113,9 @@ update_code(Application, Module, Binary) ->
     c:l(Module).
 
 
-%%%%%%%%%%%%%%%%%% ADDING THE MOVEMENT DETECTION TO THE NUMERL VERSION OF sensor_fusion %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%     ADDING THE MOVEMENT DETECTION TO THE NUMERL VERSION OF sensor_fusion     %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 realtime() ->
     io:format("Start Realtime with 3 seconds between gesture, during 60 seconds~n",[]),
@@ -141,11 +143,9 @@ clear_gesture() ->
 
 
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Callbacks
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     MODULE CALLBACKS     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 start(_Type, _Args) ->
     {ok, Supervisor} = sensor_fusion_sup:start_link(),
@@ -169,9 +169,10 @@ start(_Type, _Args) ->
 
 stop(_State) -> ok.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Internal functions
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%     MODULE INTERNAL FUNCTIONS     %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 node_type() ->
     Host = lists:nthtail(14, atom_to_list(node())), % Returns the actual node, so here, sensor_fusion@nav_1. It returns AFTER the 14th element, meaning the @.
@@ -190,7 +191,7 @@ launch(nav) -> % This is the function called by sensor_fusion:launch() when we a
     % Cn = ets:lookup_element(args, {nav, node()}, 2),
     % Cm = ets:lookup_element(args, {mag, node()}, 2),  
     Cn = ets:lookup_element(args, {nav3, node()}, 2),   % Takes the calibration data and puts it in a variable.
-    R0 = ets:lookup_element(args, {e11, node()}, 2),
+    %R0 = ets:lookup_element(args, {e11, node()}, 2),
     % {ok,_} = hera:start_measure(nav, Cn),
     % {ok,_} = hera:start_measure(mag, Cm),
 
@@ -202,7 +203,7 @@ launch(nav) -> % This is the function called by sensor_fusion:launch() when we a
     % For debugging purposes.
     %output_log("I'm calling hera:start_measure(e11, R0)~n",[]),
 
-    {ok,_} = hera:start_measure(e11, R0),               
+    %ok,_} = hera:start_measure(e11, R0),               
     ok;
 
 launch(sonar) ->

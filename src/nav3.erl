@@ -59,6 +59,8 @@ measure(C=#cal{gyro={GBx,GBy,GBz}, mag={MBx,MBy,MBz}}) ->
 
     % For debugging purposes.
     %output_log("hera_measure called me: I am nav3:measure!~n",[]),
+    %Time = erlang:system_time(microsecond),
+    %io:format("nav3 measure being called! Time: ~p.~n",[Time]),
 
     % See https://hexdocs.pm/grisp/ where in fact, the gyroscope AND accelerometer are accessed via acc.
     [Ax,Ay,Az, Gx,Gy,Gz] = pmod_nav:read(acc, [

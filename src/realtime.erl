@@ -11,9 +11,10 @@ start(Type, Maxtime, Period) ->
     case Type of 
     once ->
         io:format("Countdown!~n"),
-        countdown(2),
+        Delay = 2,
+        countdown(Delay),
         io:format("StartTime : ~p~n", [StartTime]),
-        collect_data_over_time(StartTime + Maxtime + 5000); % 5000 for the countdown
+        collect_data_over_time(StartTime + Maxtime + Delay*1000); % Delay*1000 for the countdown
     loop ->
         if Period < 0 ->
             grdos(Maxtime, Period); % Keep Period negative to loop indefinitely
