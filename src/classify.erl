@@ -99,7 +99,7 @@ compare_gesture(NewX, NewY, NewZ, List_gestures) ->
     compare_gesture(NewX, NewY, NewZ, List_gestures, none, 0).
 compare_gesture(NewX, NewY, NewZ, List_gestures, Name, Accuracy) ->
     case List_gestures of
-        [] -> {Name, Accuracy}; % Empty list
+        [] -> {Name, Accuracy}; % Empty list. This is sent at the end, when the whole gesture list has been tested.
         [H|T] ->
             % Take the 3 next list of flow, to have the 3 axis
             [GName|_] = H, % GName = Gesture Name
