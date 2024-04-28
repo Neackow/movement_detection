@@ -80,6 +80,8 @@ grdos(Maxtime, Period) ->
     AS = learn:av_size(),
     grdos(Maxtime, Period, AS, [], 0, [], 0, 0, x, x, x). % x for nothing
 
+
+% ======================= <EXPLANATIONS FOR THE GRDOS FUNCTION> =======================
 % TO(TimeOut) : time to stay without moving
 % AS(Average Size) : Size of the List where we will do the average (it is too reduce the noise)
 % List : List used to detect the stop
@@ -89,12 +91,17 @@ grdos(Maxtime, Period) ->
 % TSM(Time Since Move) : Last time a movement was detected, if greater than TO, then we have a stop
 % LastX, LastY, LastZ : Last gesture for an axis
 % grdos => gesture_recognition_division_over_stop
+% ======================= </EXPLANATIONS FOR THE GRDOS FUNCTION> =======================
+
 grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ) ->
-    [{_, _,Time, Data}] = hera_data:get(nav3, sensor_fusion@nav_1),
+    [{_, _,Time, Data}] = hera_data:get(nav3, sensor_fusion@nav_1), % hera_data:get answers back with the structure {Node, Seq, Timestamp, Data}
     if Time > Period andalso Period > 0 ->
         io:format("~n~n~n"), % Just to make it more readable
         io:format("End of Timer!~nCalculating...~n"),
-        classify:classify_new_gesture(GestureList);
+        %classify:classify_new_gesture(GestureList); % Initially: classify the gesture with whatever data is present. Bad for me.
+        % New version: at the end of the timer, automatically stop the crate.
+        net_adm:ping(sensor_fusion@orderCrate), 
+        rpc:call(sensor_fusion@orderCrate, hera_sendOrder, set_state_crate, [stopCrate]);
     true ->
         if Time == LastT ->
             grdos(TO, Period, AS, List, SizeL, GestureList, Time, TSM, LastX, LastY, LastZ); % Skip if no new data
@@ -102,7 +109,7 @@ grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ)
             NewGestureList = lists:append(GestureList, [Data]),
             NewList = lists:append(List, [Data]),
             NewSizeL = SizeL + 1,
-            if NewSizeL >= AS ->  % It mean we can compute the average
+            if NewSizeL >= AS ->  % It means we can compute the average. AS = Average Size.
                 ListX = csvparser:parse(NewList, 1),
                 ListY = csvparser:parse(NewList, 2),
                 ListZ = csvparser:parse(NewList, 3),

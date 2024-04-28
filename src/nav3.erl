@@ -63,7 +63,7 @@ measure(C=#cal{gyro={GBx,GBy,GBz}, mag={MBx,MBy,MBz}}) ->
     %io:format("nav3 measure being called! Time: ~p.~n",[Time]),
 
     % See https://hexdocs.pm/grisp/ where in fact, the gyroscope AND accelerometer are accessed via acc.
-    [Ax,Ay,Az, Gx,Gy,Gz] = pmod_nav:read(acc, [
+    [Ax,Ay,Az,Gx,Gy,Gz] = pmod_nav:read(acc, [
         out_x_xl,out_y_xl,out_z_xl,
         out_x_g,out_y_g,out_z_g]),
     Acc = [Ax,Ay,-Az],

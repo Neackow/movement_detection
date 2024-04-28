@@ -13,8 +13,8 @@ classify_new_gesture(List) ->
     List_gestures = import_gesture(),
 
     VectorX = parse(List, 1), % 1 is the index of the x axis acceleration
-    PatternX = analyze(VectorX),
-    Clean_PatX = average(PatternX),
+    PatternX = analyze(VectorX),    % This will generate the initial pattern, made of nn, n, o, p and pps. 
+    Clean_PatX = average(PatternX), % This then cleans the pattern by making averages, in order to reduce noise.
     NewX = regroup(Clean_PatX), % New is the general flow of the new gesture
     io:format("NewX : ~p~n", [NewX]),
 

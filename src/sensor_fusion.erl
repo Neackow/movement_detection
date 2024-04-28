@@ -118,7 +118,7 @@ update_code(Application, Module, Binary) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 realtime() ->
-    io:format("Start Realtime with 3 seconds between gesture, during 60 seconds~n",[]),
+    io:format("Start Realtime with 2 seconds between gesture, during 60 seconds~n",[]),
     realtime:start(loop, 2000, 60000).
 
 realtime(Time, Period) ->
