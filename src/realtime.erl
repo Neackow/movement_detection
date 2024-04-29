@@ -2,6 +2,9 @@
 
 -export([start/3]).
 
+% Set to 0 at initialisation. It is used to detect the end of the algorithm.
+-record(counter, {value = 0}).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% API
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,7 +81,7 @@ learning(List) ->
 
 grdos(Maxtime, Period) ->
     AS = learn:av_size(),
-    grdos(Maxtime, Period, AS, [], 0, [], 0, 0, x, x, x). % x for nothing
+    grdos(Maxtime, Period, AS, [], 0, [], 0, 0, x, x, x, Counter = #counter{}). % x for nothing
 
 
 % ======================= <EXPLANATIONS FOR THE GRDOS FUNCTION> =======================
@@ -93,7 +96,7 @@ grdos(Maxtime, Period) ->
 % grdos => gesture_recognition_division_over_stop
 % ======================= </EXPLANATIONS FOR THE GRDOS FUNCTION> =======================
 
-grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ) ->
+grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ, Counter) ->
     [{_, _,Time, Data}] = hera_data:get(nav3, sensor_fusion@nav_1), % hera_data:get answers back with the structure {Node, Seq, Timestamp, Data}
     if Time > Period andalso Period > 0 ->
         io:format("~n~n~n"), % Just to make it more readable
@@ -104,7 +107,7 @@ grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ)
         rpc:call(sensor_fusion@orderCrate, hera_sendOrder, set_state_crate, [stopCrate]);
     true ->
         if Time == LastT ->
-            grdos(TO, Period, AS, List, SizeL, GestureList, Time, TSM, LastX, LastY, LastZ); % Skip if no new data
+            grdos(TO, Period, AS, List, SizeL, GestureList, Time, TSM, LastX, LastY, LastZ, Counter); % Skip if no new data
         true ->
             NewGestureList = lists:append(GestureList, [Data]),
             NewList = lists:append(List, [Data]),
@@ -126,20 +129,34 @@ grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ)
                     if Time >= TSM + TO ->
                         io:format("~n~n~n~n"), % Just to make it more readable
                         io:format("Stop detected!~n"),
-                        classify:classify_new_gesture(GestureList),
-                        grdos(TO, Period, AS, [], 0, [], Time, Time, LastX, LastY, LastZ);
+                        {Name, Accuracy} = classify:classify_new_gesture(GestureList),
+                        if Accuracy >= 0.7 ->
+                            if Name == stopCrate ->
+                                NewCounter = Counter#counter{value = Counter#counter.value + 1};
+                            true ->
+                                NewCounter = Counter#counter{value = 0}
+                            end;
+                        true ->
+                            NewCounter = Counter
+                        end,    
+                        if Counter#counter.value == 3 ->
+                            NewCounter = Counter#counter{value = 0},
+                            grdos(TO, 1, AS, [], 0, [], Time, Time, LastX, LastY, LastZ, NewCounter);
+                        true ->
+                            grdos(TO, Period, AS, [], 0, [], Time, Time, LastX, LastY, LastZ, NewCounter)
+                        end;
                     true -> % too soon, still need to wait
-                        grdos(TO, Period, AS, [], 0, GestureList, Time, TSM, LastX, LastY, LastZ)
+                        grdos(TO, Period, AS, [], 0, GestureList, Time, TSM, LastX, LastY, LastZ, Counter)
                     end;
                 true ->
                     NewLastX = HX,
                     NewLastY = HY,
                     NewLastZ = HZ,
                     NewTSM = Time,
-                    grdos(TO, Period, AS, [], 0, NewGestureList, Time, NewTSM, NewLastX, NewLastY, NewLastZ)
+                    grdos(TO, Period, AS, [], 0, NewGestureList, Time, NewTSM, NewLastX, NewLastY, NewLastZ, Counter)
                 end;
             true ->
-                grdos(TO, Period, AS, NewList, NewSizeL, NewGestureList, Time, TSM, LastX, LastY, LastZ)
+                grdos(TO, Period, AS, NewList, NewSizeL, NewGestureList, Time, TSM, LastX, LastY, LastZ, Counter)
             end
         end
     end.

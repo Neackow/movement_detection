@@ -42,7 +42,8 @@ classify_new_gesture(List) ->
         io:format("Name : ~p, with Acc : ~p~n", [Name, Accuracy]);
     true ->
         io:format("Too low Accuracy, No gesture recognized~n")
-    end.
+    end,
+    {Name, Accuracy}.
 
 % CSV : "../measures/hc1.csv"
 classify_new_gesture_CSV(CSV) ->
