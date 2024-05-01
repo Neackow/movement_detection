@@ -139,9 +139,9 @@ grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ,
                         true ->
                             NewCounter = Counter
                         end,    
-                        if Counter#counter.value == 3 ->
-                            % We put the period at 1, so that it is immediately over at the next call.
-                            grdos(TO, 1, AS, [], 0, [], Time, Time, LastX, LastY, LastZ, Counter = #counter{value = 0}); 
+                        if NewCounter#counter.value == 3 -> % We need to do it on NewCounter, otherwise, it would take one useless step more to stop.
+                            % We put the period at 1, so that it is immediately over at the next call. Reset the counter for good measure.
+                            grdos(TO, 1, AS, [], 0, [], Time, Time, LastX, LastY, LastZ, CounterReset = #counter{value = 0}); 
                         true ->
                             grdos(TO, Period, AS, [], 0, [], Time, Time, LastX, LastY, LastZ, NewCounter)
                         end;
