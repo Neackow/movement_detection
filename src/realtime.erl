@@ -130,7 +130,6 @@ grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ,
                         io:format("~n~n~n~n"), % Just to make it more readable
                         io:format("Stop detected!~n"),
                         {Name, Accuracy} = classify:classify_new_gesture(GestureList),
-                        NewCounter = Counter,
                         if Accuracy >= 0.7 ->
                             if Name == stopCrate ->
                                 NewCounter = Counter#counter{value = Counter#counter.value + 1};
