@@ -140,9 +140,8 @@ grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ,
                             NewCounter = Counter
                         end,    
                         if Counter#counter.value == 3 ->
-                            NewCounter = Counter#counter{value = 0},
                             % We put the period at 1, so that it is immediately over at the next call.
-                            grdos(TO, 1, AS, [], 0, [], Time, Time, LastX, LastY, LastZ, NewCounter); 
+                            grdos(TO, 1, AS, [], 0, [], Time, Time, LastX, LastY, LastZ, Counter = #counter{value = 0}); 
                         true ->
                             grdos(TO, Period, AS, [], 0, [], Time, Time, LastX, LastY, LastZ, NewCounter)
                         end;
