@@ -15,7 +15,8 @@
     	sonar, nav, nav3, mag, bilateration,
     	e4, e5, e6, e7, e8, e9, e10, e11,
 	classify, csvparser, learn, realtime,
-        measure_counter, killer        
+        measure_counter, killer,
+        sendOrder, sendOrder_sup, i2c_communication     
     ]},
     {maintainers, []},
     {licenses, ["Apache 2.0"]},

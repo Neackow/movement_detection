@@ -38,7 +38,7 @@ classify_new_gesture(List) ->
         % Only done when the accuracy is good enough (security measure). This will help a bit with forbidding some movements.
         net_adm:ping(sensor_fusion@orderCrate), % To connect the node. I could do it only once, but since the same code is used on both GRiSP,
                                                 % the risk would be that GRiSP2 tries to connect... to GRiSP2. So, redo it here, it's no big deal.
-        rpc:call(sensor_fusion@orderCrate, hera_sendOrder, set_state_crate, [Name]),
+        rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [Name]),
         io:format("Name : ~p, with Acc : ~p~n", [Name, Accuracy]);
     true ->
         io:format("Too low Accuracy, No gesture recognized~n")

@@ -104,7 +104,7 @@ grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ,
         %classify:classify_new_gesture(GestureList); % Initially: classify the gesture with whatever data is present. Bad for me.
         % New version: at the end of the timer, automatically stop the crate.
         net_adm:ping(sensor_fusion@orderCrate), 
-        rpc:call(sensor_fusion@orderCrate, hera_sendOrder, set_state_crate, [stopCrate]);
+        rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [stopCrate]);
     true ->
         if Time == LastT ->
             grdos(TO, Period, AS, List, SizeL, GestureList, Time, TSM, LastX, LastY, LastZ, Counter); % Skip if no new data
