@@ -156,7 +156,8 @@ start(_Type, _Args) ->
         sonar ->
             _ = grisp:add_device(uart, pmod_maxsonar),
             pmod_maxsonar:set_mode(single);
-        order ->                               % At start, launch the supervisor. It is independent of hera.
+        order ->                               % At start, launch the supervisor. It is independent of hera. Starts sendOrder and sets up the I2C communication.
+            io:format("I am correctly starting here.~n~n~n"),
             _ = sendOrder_sup:start_link();    % This supervisor is not supervised, thus, if the node goes down, it goes down.
         _ -> % needed when we use make shell
             _ = net_kernel:set_net_ticktime(8),

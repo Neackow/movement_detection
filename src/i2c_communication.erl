@@ -66,6 +66,7 @@ init([]) ->
     % Display message to the console: allows to see if the function is correctly being setup from the shell.
     io:format("An I2C communication is being setup!~n"),
     I2CBus = grisp_i2c:open(i2c1), % Open the bus.
+    io:format("Bus I2C set-up: ~p.~n",[I2CBus]),
     % Set default state and return {ok, state}. State is the internal state of the gen_server.
     {ok, #busI2C{busName = I2CBus}}.
 

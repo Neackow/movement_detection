@@ -27,6 +27,6 @@ init(_Args) ->
         start => {i2c_communication, start_link, []}
     },
 
-    ChildSpecs = [],  
+    ChildSpecs = [SendOrder,I2C],  
     {ok, {SupFlags, ChildSpecs}}.
 

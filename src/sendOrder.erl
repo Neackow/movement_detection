@@ -87,20 +87,20 @@ order_crate(State) ->
                     [0,1,0,0,2];
                 accelerate ->   % When we are changing the speed, do not move the crate, by default. Just change the state.
                     if State#movState.currentSpeed == 100 ->
+                        NewState = State#movState{currentSpeed = 110};
+                    State#movState.currentSpeed == 110 ->
                         NewState = State#movState{currentSpeed = 120};
-                    State#movState.currentSpeed == 120 ->
-                        NewState = State#movState{currentSpeed = 140};
-                    State#movState.currentSpeed >= 140 ->
+                    State#movState.currentSpeed >= 120 ->
                         io:format("Cannot accelerate further!~n"),
-                        NewState = State#movState{currentSpeed = 140};
+                        NewState = State#movState{currentSpeed = 120};
                     true ->
                         NewState = State#movState{currentSpeed = State#movState.currentSpeed}
                     end,
                     [0,1,0,0,0];
                 decelerate ->
-                    if State#movState.currentSpeed == 140 ->
-                        NewState = State#movState{currentSpeed = 120};
-                    State#movState.currentSpeed == 120 ->
+                    if State#movState.currentSpeed == 120 ->
+                        NewState = State#movState{currentSpeed = 110};
+                    State#movState.currentSpeed == 110 ->
                         NewState = State#movState{currentSpeed = 100};
                     State#movState.currentSpeed =< 100 -> % Just in case the sun wants to play with me.
                         io:format("Cannot decelerate further!~n"),
