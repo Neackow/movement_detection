@@ -52,6 +52,7 @@ read_i2c(Bus) ->
     io:format("Message received is ~p~n", [Message]),
     Available = lists:nth(1, binary_to_list(lists:nth(1, Message))). % Convert the binary coded on 8 bits and received as [<<val>>] to an integer.
 
+
 % =======================================================================
 % ======================== </private functions> =========================
 % =======================================================================
@@ -75,6 +76,7 @@ init([]) ->
 handle_call({read}, From, State = #busI2C{busName = BusName}) ->
     FinalState = State,
     Available = read_i2c(BusName),
+    io:format("The bus is ~p.~n", [BusName]),
     {reply, Available, FinalState};
 
 handle_call(stop, From, State = #busI2C{}) ->
@@ -86,7 +88,8 @@ handle_call(stop, From, State = #busI2C{}) ->
 handle_cast({write, Command}, State = #busI2C{busName = BusName}) ->
     FinalState = State,
     send_i2c(Command, BusName),
-    {noreply, ok, FinalState};
+    io:format("Are we past this ?~n"),
+    {noreply, FinalState};
 
 % If anything else.
 handle_cast(_Request, State = #busI2C{}) ->
