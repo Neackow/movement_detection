@@ -124,12 +124,12 @@ grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ,
                 AvgZ = learn:average(PatternZ),
                 
                 % Immediately detects a stop and send it. Do not increment the counter, as it would interfere with the end of algorithm routine.
-                %if AvgZ == nn ->
-                %    net_adm:ping(sensor_fusion@orderCrate),
-                %    rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [stopCrate]),
-                %true ->
-                %    ok
-                %end,
+                if AvgZ == nn ->
+                    net_adm:ping(sensor_fusion@orderCrate),
+                    rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [stopCrate]);
+                true ->
+                    ok
+                end,
                 
                 [HX|_] = AvgX,
                 [HY|_] = AvgY,

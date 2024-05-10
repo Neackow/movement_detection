@@ -67,7 +67,6 @@ init([]) ->
     % Display message to the console: allows to see if the function is correctly being setup from the shell.
     io:format("An I2C communication is being setup!~n"),
     I2CBus = grisp_i2c:open(i2c1), % Open the bus.
-    io:format("Bus I2C set-up: ~p.~n",[I2CBus]),
     % Set default state and return {ok, state}. State is the internal state of the gen_server.
     {ok, #busI2C{busName = I2CBus}}.
 
@@ -88,7 +87,6 @@ handle_call(stop, From, State = #busI2C{}) ->
 handle_cast({write, Command}, State = #busI2C{busName = BusName}) ->
     FinalState = State,
     send_i2c(Command, BusName),
-    io:format("Are we past this ?~n"),
     {noreply, FinalState};
 
 % If anything else.
