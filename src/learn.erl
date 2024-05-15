@@ -107,10 +107,10 @@ average(List, Size, New_L) ->
         Av = calculate_av(List),
         lists:append(New_L, [Av]); % Return the list of average
     true ->
-        Sub_List = lists:sublist(List, Size),
-        Av = calculate_av(Sub_List),
-        Next_L = lists:sublist(List, Size + 1, length(List)),
-        average(Next_L, Size, lists:append(New_L, [Av]))
+        Sub_List = lists:sublist(List, Size),   % Idea: get the 50 first elements...
+        Av = calculate_av(Sub_List),            % Compute the average on them...
+        Next_L = lists:sublist(List, Size + 1, length(List)),   % Say that the next list starts at the 51th elemend, until the end...
+        average(Next_L, Size, lists:append(New_L, [Av]))        % Start again.
     end.
 
 % export the gesture to the file

@@ -122,9 +122,10 @@ grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ,
                 AvgX = learn:average(PatternX),
                 AvgY = learn:average(PatternY),
                 AvgZ = learn:average(PatternZ),
-                
+
+                FirstElement = lists:nth(1,AvgZ), % This is used to extract the atom from the list.
                 % Immediately detects a stop and send it. Do not increment the counter, as it would interfere with the end of algorithm routine.
-                if AvgZ == nn ->
+                if FirstElement == nn ->
                     net_adm:ping(sensor_fusion@orderCrate),
                     rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [stopCrate]);
                 true ->
