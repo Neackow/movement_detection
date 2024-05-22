@@ -43,7 +43,8 @@ clean:
 	@rm -rf ./_build
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	
+
+# Added by Nicolas Isenguerre, for ease of use.
 # push: push the updated code for hera from another folder
 # Call it with make push_hera COMMIT="yourcomment"
 push_hera:
