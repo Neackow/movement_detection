@@ -43,7 +43,7 @@ read_data() ->
 
 send_i2c(Command, Bus) ->
     List_data = lists:flatten(lists:map(fun(X) -> X end, lists:map(fun(X) -> lists:sublist(binary_to_list(term_to_binary(X)),3,8) end, Command))),
-    grisp_i2c:transfer(Bus, [{write, 16#40, 1, List_data}]), % 16#40 is the fixed address of the Raspberry Pi Pico W, in hexadecimal format.
+    grisp_i2c:transfer(Bus, [{write, 16#40, 1, List_data}]), % 16#40 is the fixed address of the Raspberry Pi Pico W, in hexadecimal format (0x40).
     io:format("Command sent to the micro-controller!~n").
 
 % Read from the controller if we are avaiable or not.

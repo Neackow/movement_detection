@@ -1,11 +1,11 @@
 % Nicolas Isenguerre, 13/04/2024. 
 
-% Module to convert movements to orders on an object. 
-% This V1.0 offers the ability to control a wine crate on wheels, with movements associated to defined orders.
+% Module to convert gestures to orders on an object. 
+% This V1.0 offers the ability to control a wine crate on wheels, with gestures associated to defined orders.
 % This is called by the set_state_crate(MovementDetected), which calls the 'ctrlCrate' version of the handle_call function.
 % Extensions of this code are straightforward: either do your own functions and redirect the orders to it, or extend the handle_call procedures
-% for more functionalities. E.g.: if the PMOD Ultrawideband comes out, a follower function can be added. % This could be called via 
-% gen_server:call(?MODULE, {follower, WhateverArgument}) and redirect to an appropriate handle_call procedure.
+% for more functionalities. E.g.: if the PMOD Ultrawideband comes out, a follower function can be added.
+% This could be called via gen_server:call(?MODULE, {follower, WhateverArgument}) and redirect to an appropriate handle_call procedure.
 
 -module(sendOrder).
 
@@ -15,12 +15,12 @@
 -export([start_link/0, set_state_crate/1, checkingConnection/1]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2]).
 
-% At initialisation (see init/1 function): currentSpeed = 100 RPM (in forward direction). 
-% prevName: used to forbid going from a movement forward to backward, or vice-versa. Set at stopCrate, by default.
-% movName: store the movement name as detected by the GRiSP board. 
-% movMode: this is to deal with submodes. E.g.: if I want to be in 'changeSpeed mode', then it stores this mode. 
-% By default: stopCrate and normal, normal being the 'no movement mode currently'.
--record(movState, {currentSpeed, prevName, movName, movMode}).
+% At initialisation (see init/1 function): currentVelocity = 100 RPM (in forward direction). 
+% prevName: used to forbid unauthorised gesture succession. Set at stopCrate, by default.
+% movName: store the movement name as detected by the GRiSP2 board. 
+% movMode: this is to deal with submodes. E.g.: if I want to be in 'changeVelocity' mode, then it stores it in this variable. 
+% By default: stopCrate and normal, normal being the 'by default' mode.
+-record(movState, {currentVelocity, prevName, movName, movMode}).
 
 % At initialisation, this counter is set to 0 and the function verifying that the other node is connected is launched.
 -record(counter, {value = 0}).
@@ -31,12 +31,12 @@
 % =======================================================================
 
 start_link() ->
-    % Start controlling the object crate_on_wheel with the state 'no_move'. Calls init/1.
+    % Initiates the gen_server. Calls init/1.
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
-%% Synchronous call: sets the new state according to the detected movement. This function is called by rpc:call on the other GRiSP. 
+%% Synchronous call: sets the new state according to the detected movement. This function is called by rpc:call on the other GRiSP2. 
 set_state_crate(MovementDetected) -> 
-    if(MovementDetected == testRPC) -> % To test the good connection between the two GRiSPs. Useless otherwise.
+    if(MovementDetected == testRPC) -> % To test the good connection between the two GRiSPs. Useless otherwise. Manual command.
         grisp_led:color(1,white),
         grisp_led:color(2,black);
         true ->
@@ -46,7 +46,7 @@ set_state_crate(MovementDetected) ->
 
 % Checking if the other board is still answering and available to send orders. This is a safety measure, a guard-rail.
 % Has to be public in order to be called by apply_after.
-% Also, in parallel, "ping" the Rapberry board to tell it the GRiSP is still alive.
+% Also, in parallel, "ping" the Raspberry board to tell it the receiver is still alive.
 checkingConnection(Counter) ->
     Connected = net_adm:ping(sensor_fusion@nav_1),
     if Connected == pang ->
@@ -73,48 +73,48 @@ checkingConnection(Counter) ->
 % ========================= <private functions> =========================
 % =======================================================================
 
-% Structure of Order: [V1, DIR1, V2, DIR2, command_indicator].
+% Structure of Order: [V1, DIR1, V2, DIR2, command_index].
 % The command indicator allows the controller to know if it's turning, simply moving forward, etc.
-% This could have been simply implemented within the controller by comparing speeds, etc. but since it was needed in changeSpeed mode to try it out,
+% This could have been simply implemented within the controller by comparing velocities, etc. but since it was needed in changeVelocity mode to try it out,
 % it may aswell be reused for simplicity.
-% command_indicator = 0 -> continuous mode, smooth position profile ; 1 -> test speed in changeSpeed mode ; 2 -> crate-on-wheels stopping ; 3 -> turning around.
+% command_index = 0 -> continuous mode, smooth position profile ; 1 -> test velocity in changeVelocity mode ; 2 -> crate-on-wheels stopping ; 3 -> turning around.
 order_crate(State) ->
     Order = case State#movState.movMode of
-        changeSpeed ->
+        changeVelocity ->
             case State#movState.movName of
                 stopCrate ->   % Stop the crate from whatever it was doing. Reset values to baseline.
-                    NewState = State#movState{currentSpeed = 100},
+                    NewState = State#movState{currentVelocity = 100},
                     [0,1,0,0,2];
-                accelerate ->   % When we are changing the speed, do not move the crate, by default. Just change the state.
-                    if State#movState.currentSpeed == 100 ->
-                        NewState = State#movState{currentSpeed = 110};
-                    State#movState.currentSpeed == 110 ->
-                        NewState = State#movState{currentSpeed = 120};
-                    State#movState.currentSpeed >= 120 ->
+                accelerate ->   % When we are changing the velocity, do not move the crate, by default. Just change the state.
+                    if State#movState.currentVelocity == 100 ->
+                        NewState = State#movState{currentVelocity = 110};
+                    State#movState.currentVelocity == 110 ->
+                        NewState = State#movState{currentVelocity = 120};
+                    State#movState.currentVelocity >= 120 ->
                         io:format("Cannot accelerate further!~n"),
-                        NewState = State#movState{currentSpeed = 120};
+                        NewState = State#movState{currentVelocity = 120};
                     true ->
-                        NewState = State#movState{currentSpeed = State#movState.currentSpeed}
+                        NewState = State#movState{currentVelocity = State#movState.currentVelocity}
                     end,
                     [0,1,0,0,0];
                 decelerate ->
-                    if State#movState.currentSpeed == 120 ->
-                        NewState = State#movState{currentSpeed = 110};
-                    State#movState.currentSpeed == 110 ->
-                        NewState = State#movState{currentSpeed = 100};
-                    State#movState.currentSpeed =< 100 -> % Just in case the sun wants to play with me.
+                    if State#movState.currentVelocity == 120 ->
+                        NewState = State#movState{currentVelocity = 110};
+                    State#movState.currentVelocity == 110 ->
+                        NewState = State#movState{currentVelocity = 100};
+                    State#movState.currentVelocity =< 100 -> % Just in case the sun wants to play with me.
                         io:format("Cannot decelerate further!~n"),
-                        NewState = State#movState{currentSpeed = 100};
+                        NewState = State#movState{currentVelocity = 100};
                     true ->
-                        NewState = State#movState{currentSpeed = State#movState.currentSpeed}
+                        NewState = State#movState{currentVelocity = State#movState.currentVelocity}
                     end,
                     [0,1,0,0,0];
                 testingSpeed ->
                     NewState = State,
-                    [State#movState.currentSpeed,1,State#movState.currentSpeed,0,1];
+                    [State#movState.currentVelocity,1,State#movState.currentVelocity,0,1];
                 _ ->
                     NewState = State,
-                    io:format("Invalid command when in changeSpeed mode.~n"),
+                    io:format("Invalid command when in changeVelocity mode.~n"),
                     [0,1,0,0,2] % When order is invalid, automatically set to 0. Send to "slow down to 0", we stop the crate.
             end;
         normal ->
@@ -124,10 +124,10 @@ order_crate(State) ->
                     [0,1,0,0,2];
                 forward ->
                     NewState = State#movState{prevName = forward},
-                    [State#movState.currentSpeed,1,State#movState.currentSpeed,0,0];
+                    [State#movState.currentVelocity,1,State#movState.currentVelocity,0,0];
                 backward ->
                     NewState = State#movState{prevName = backward},
-                    [State#movState.currentSpeed,0,State#movState.currentSpeed,1,0];
+                    [State#movState.currentVelocity,0,State#movState.currentVelocity,1,0];
                 forwardTurnLeft ->
                     NewState = State#movState{prevName = forward},
                     [80,1,110,0,0]; % When turning, we stay in "continuous" mode, an a dedicated function will adapt the speeds.
@@ -187,20 +187,20 @@ init([]) ->
     % Initialise the counter and launch the function immediately.
     checkingConnection(Counter = #counter{}),
     % Set default state and return {ok, state}. State is the internal state of the gen_server.
-    {ok, #movState{currentSpeed = 100, prevName = stopCrate, movName = stopCrate, movMode = normal}}.
+    {ok, #movState{currentVelocity = 100, prevName = stopCrate, movName = stopCrate, movMode = normal}}.
 
-handle_call({ctrlCrate, MovementDetected}, From, State = #movState{currentSpeed = CurrentSpeed, movName = MovName, movMode = MovMode}) ->
+handle_call({ctrlCrate, MovementDetected}, From, State = #movState{currentVelocity = CurrentVelocity, movName = MovName, movMode = MovMode}) ->
     Available = i2c_communication:read_data(),
     SuffixMovement = movementComparison(MovementDetected,7),        % This can't be used as a guard. So, define variable outside.
     PreviousSuffix = movementComparison(State#movState.prevName,7), % Only on 7 letters, so as to not double everything.
     if Available == 1 ->
-        if MovementDetected == changeSpeed -> 
-            NewState = State#movState{prevName = changeSpeed, movName = stopCrate, movMode = changeSpeed}; 
-            % When entering changeSpeed mode, stop the crate. It allows easy reset of the changeSpeed mode, in case the user is lost.
-            % We set here that the previous move was changeSpeed, only to do it once at entry and same for exitChangeSpeed.
-        MovementDetected == exitChangeSpeed ->
-            NewState = State#movState{prevName = exitChangeSpeed, movName = stopCrate, movMode = normal};
-            % When exiting changeSpeed mode, stop the crate, once again for security measures. 
+        if MovementDetected == changeVelocity -> 
+            NewState = State#movState{prevName = changeVelocity, movName = stopCrate, movMode = changeVelocity}; 
+            % When entering changeVelocity mode, stop the crate. It allows easy reset of the changeVelocity mode, in case the user is lost.
+            % We set here that the previous move was changeVelocity, only to do it once at entry and same for exitChangeVelocity.
+        MovementDetected == exitChangeVelocity ->
+            NewState = State#movState{prevName = exitChangeVelocity, movName = stopCrate, movMode = normal};
+            % When exiting changeVelocity mode, stop the crate, once again as security measure. 
         SuffixMovement == "forward" ->  % If the current move says "forward"...
             if PreviousSuffix == "backwar" -> % And that now, we would like to go "backward"...
                 NewState = State#movState{prevName = forward, movName = stopCrate}; % Stop the crate.
@@ -239,7 +239,7 @@ handle_info(Msg, State) ->
 terminate(normal, State) ->
     io:format("sendOrder: normal termination~n",[]);
 
-terminate(shutdown, State = #movState{currentSpeed=CurrentSpeed,movName=MovName,movMode=MovMode}) ->
+terminate(shutdown, State = #movState{currentVelocity=CurrentVelocity,movName=MovName,movMode=MovMode}) ->
     % terminating
     io:format("sendOrder: managing shutdown~n",[]);
     

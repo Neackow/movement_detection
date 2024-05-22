@@ -89,8 +89,9 @@ measure({T0, X0, P0, R0}) ->
             {Acc, Gyro, Mag} = process_nav(Nav),
 
             R1 = ahrs(Acc, Mag),
-            Quat = dcm2quat(mat:'*'(R1, R0)),   % This is never truly explained in the TFEs. The way I get it: we get the orientation by multiplying the original calibration orientation
-                                                % and the current orientation matrix, in DCM format. 
+            Quat = dcm2quat(mat:'*'(R1, R0)),   
+            % This is never truly explained in the TFEs. The way I get it: we get the orientation by multiplying the original calibration orientation
+            % and the current orientation matrix, in DCM format. 
             % {ok, Quat, {T1, X0, P0, R0}} % acc_mag only
 
             Dt = (T1-T0)/1000,
@@ -106,7 +107,7 @@ measure({T0, X0, P0, R0}) ->
             ]),
 
             F = mat:'+'(mat:eye(4), mat:'*'(0.5*Dt, Omega)),
-            Q = mat:diag([?VAR_Q,?VAR_Q,?VAR_Q,?VAR_Q]), % Not squared ? Indeed, because the value is already sigma_Q².
+            Q = mat:diag([?VAR_Q,?VAR_Q,?VAR_Q,?VAR_Q]), % Not squared? Indeed, because the value is already sigma_Q².
             H = mat:eye(4),
             Z = mat:tr(Quat),
             R = mat:diag([?VAR_R,?VAR_R,?VAR_R,?VAR_R]),
