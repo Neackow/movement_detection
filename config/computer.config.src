@@ -2,7 +2,8 @@
 {hera, [
     {log_data, false},
     {show_log, false},
-    {show_log_spec,false}
+    {show_log_spec,false},
+    {log_BL,true}
 ]},
 
 {kernel, [
