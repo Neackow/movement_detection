@@ -109,7 +109,7 @@ order_crate(State) ->
                         NewState = State#movState{currentVelocity = State#movState.currentVelocity}
                     end,
                     [0,1,0,0,0];
-                testingSpeed ->
+                testingVelocity ->
                     NewState = State,
                     [State#movState.currentVelocity,1,State#movState.currentVelocity,0,1];
                 _ ->
@@ -130,8 +130,8 @@ order_crate(State) ->
                     [State#movState.currentVelocity,0,State#movState.currentVelocity,1,0];
                 forwardTurnLeft ->
                     NewState = State#movState{prevName = forward},
-                    [80,1,110,0,0]; % When turning, we stay in "continuous" mode, an a dedicated function will adapt the speeds.
-                    % The speeds are fixed. This is a design choice, to have a slow turn, to keep as much control on the crate as possible.
+                    [80,1,110,0,0]; % When turning, we stay in "continuous" mode, an a dedicated function will adapt the velocities.
+                    % The velocites are fixed. This is a design choice, to have a slow turn, to keep as much control on the crate as possible.
                 forwardTurnRight ->
                     NewState = State#movState{prevName = forward},
                     [110,1,80,0,0];
@@ -212,6 +212,12 @@ handle_call({ctrlCrate, MovementDetected}, From, State = #movState{currentVeloci
                 NewState = State#movState{prevName = backward, movName = stopCrate};
             true ->
                 NewState = State#movState{movName = MovementDetected}
+            end;
+        SuffixMovement == "turnAro" -> % For the turnAround rail-guard.
+            if PreviousSuffix == "stopCra" ->
+                NewState = State#movState{prevName = turnAround, movName = turnAround}; % If previous gesture was stopCrate, it's ok.
+            true ->
+                NewState = State#movState{prevName = stopCrate, movName = stopCrate}    % If it was anything else, problem. We stop the robot.
             end;
         true ->
             NewState = State#movState{movName = MovementDetected}
