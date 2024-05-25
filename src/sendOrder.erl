@@ -142,7 +142,7 @@ order_crate(State) ->
                     NewState = State#movState{prevName = backward},
                     [110,0,80,1,0];
                 turnAround ->
-                    NewState = State#movState{prevName = turnAround},
+                    NewState = State#movState{prevName = stopCrate},
                     io:format("*briiight eyes* EVERY NOW AND THEN I FALL APART!~n"),
                     [100,1,100,1,3]; % Turn on itself, towards the right. Fixed at 100 RPM, could be less.
                 _ -> 
