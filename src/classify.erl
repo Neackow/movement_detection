@@ -41,33 +41,11 @@ classify_new_gesture(List) ->
         rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [Name]),
         io:format("Name : ~p, with Acc : ~p~n", [Name, Accuracy]);
     true ->
+        net_adm:ping(sensor_fusion@orderCrate),
+        rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [stopCrate]), % Stop the robot in case of wrong gesture.
         io:format("Too low Accuracy, No gesture recognized~n")
     end,
     {Name, Accuracy}.
-
-% CSV : "../measures/hc1.csv"
-classify_new_gesture_CSV(CSV) ->
-    List_gestures = import_gesture_CSV(),
-
-    VectorX = parse_CSV(CSV, 3), % 3 is the index of the x axis acceleration
-    PatternX = analyze_CSV(VectorX),
-    Clean_PatX = average(PatternX),
-    NewX = regroup(Clean_PatX), % New is the general flow of the new gesture
-
-    VectorY = parse_CSV(CSV, 4), % 4 is the index of the y axis acceleration
-    PatternY = analyze_CSV(VectorY),
-    Clean_PatY = average(PatternY),
-    NewY = regroup(Clean_PatY), % New is the general flow of the new gesture
-
-    VectorZ = parse_CSV(CSV, 5), % 5 is the index of the z axis acceleration
-    PatternZ = analyze_CSV(VectorZ),
-    Clean_PatZ = average(PatternZ),
-    NewZ = regroup(Clean_PatZ), % New is the general flow of the new gesture
-
-    {Name, Accuracy} = compare_gesture(NewX, NewY, NewZ, List_gestures),
-
-    % for the moment a simple print
-    io:format("Name : ~p, with Acc : ~p~n", [Name, Accuracy]).
 
 % For execution on the GRiSP board
 import_gesture() ->
@@ -81,15 +59,6 @@ import_gesture() ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Internal functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% import the gesture file to a list of gesture
-import_gesture_CSV() ->
-    {_, Data} = file:read_file("gesture"),
-    Gestures = string:tokens(binary_to_list(Data), "\n"),
-
-    Cleaned_Gestures = [string:substr(G, 2, length(G)-2) || G <- Gestures],
-    List_Gestures = [str_to_atom_list(G) || G <- Cleaned_Gestures],
-    List_Gestures.
     
 % String to list of atoms
 str_to_atom_list(Str) ->
@@ -137,7 +106,6 @@ direct_compare(New, Gesture) ->
 direct_compare(New, Gesture, Okay, Comparison) ->
     % For the moment not very opti, we look if a list is empty and then we return the accuracy
 
-
     if New == [] ->
         Total_Comp = finish_list(Gesture, 0) + Comparison,
         Okay/Total_Comp;
@@ -162,3 +130,42 @@ finish_list(List, N) ->
         [] -> N;
         [_|T] -> finish_list(T, N+1)
     end.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%
+% FOR CSV
+%%%%%%%%%%%%%%%%%%%%%
+
+% CSV : "../measures/hc1.csv"
+classify_new_gesture_CSV(CSV) ->
+    List_gestures = import_gesture_CSV(),
+
+    VectorX = parse_CSV(CSV, 3), % 3 is the index of the x axis acceleration
+    PatternX = analyze_CSV(VectorX),
+    Clean_PatX = average(PatternX),
+    NewX = regroup(Clean_PatX), % New is the general flow of the new gesture
+
+    VectorY = parse_CSV(CSV, 4), % 4 is the index of the y axis acceleration
+    PatternY = analyze_CSV(VectorY),
+    Clean_PatY = average(PatternY),
+    NewY = regroup(Clean_PatY), % New is the general flow of the new gesture
+
+    VectorZ = parse_CSV(CSV, 5), % 5 is the index of the z axis acceleration
+    PatternZ = analyze_CSV(VectorZ),
+    Clean_PatZ = average(PatternZ),
+    NewZ = regroup(Clean_PatZ), % New is the general flow of the new gesture
+
+    {Name, Accuracy} = compare_gesture(NewX, NewY, NewZ, List_gestures),
+
+    % for the moment a simple print
+    io:format("Name : ~p, with Acc : ~p~n", [Name, Accuracy]).
+
+% import the gesture file to a list of gesture
+import_gesture_CSV() ->
+    {_, Data} = file:read_file("gesture"),
+    Gestures = string:tokens(binary_to_list(Data), "\n"),
+
+    Cleaned_Gestures = [string:substr(G, 2, length(G)-2) || G <- Gestures],
+    List_Gestures = [str_to_atom_list(G) || G <- Cleaned_Gestures],
+    List_Gestures.
