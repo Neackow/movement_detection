@@ -142,7 +142,8 @@ order_crate(State) ->
                     NewState = State#movState{prevName = backward},
                     [110,0,80,1,0];
                 turnAround ->
-                    NewState = State#movState{prevName = stopCrate},
+                    NewState = State#movState{prevName = stopCrate}, 
+                    % prevName = stopCrate is necessary to be able to call turnAround multiple times in a row, due to the condition on the gesture.
                     io:format("*briiight eyes* EVERY NOW AND THEN I FALL APART!~n"),
                     [100,1,100,1,3]; % Turn on itself, towards the right. Fixed at 100 RPM, could be less.
                 _ -> 
