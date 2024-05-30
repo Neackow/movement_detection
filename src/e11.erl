@@ -78,7 +78,7 @@ measure({T0, X0, P0, R0}) ->
     % For debugging purposes.
     %output_log_spec("e11:measure!~n",[]),
 
-    DataNav = hera_data:get(nav3, sensor_fusion@nav_1),
+    DataNav = hera_data:get(nav3, movement_detection@nav_1),
     T1 = hera:timestamp(),
     Nav = [Data || {_,_,Ts,Data} <- DataNav, T0 < Ts, T1-Ts < 500],
     if

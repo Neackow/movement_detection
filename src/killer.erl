@@ -23,7 +23,7 @@ hera_measure(N, M) when M =< 10 andalso M =< N ->
     Killer = fun({_,Pid,_,_}) -> exit(Pid, killed) end,
     lists:foreach(Killer, Pids),
     timer:sleep(10000),
-    sensor_fusion:stop_all().
+    movement_detection:stop_all().
 
 
 % starts N measure_counter and kills hera_data after 5 [s] M times
@@ -42,7 +42,7 @@ hera_data(N, M) when M =< 6 ->
     end,
     lists:foreach(Killer, lists:seq(1, M)),
     timer:sleep(10000),
-    sensor_fusion:stop_all().
+    movement_detection:stop_all().
 
 
 % starts N measure_counter and kills hera_com M times after 1.5 [s]
@@ -61,7 +61,7 @@ hera_com(N, M) when M =< 6 ->
     end,
     lists:foreach(Killer, lists:seq(1, M)),
     timer:sleep(5000),
-    sensor_fusion:stop_all().
+    movement_detection:stop_all().
 
 
 % starts a measure_counter and kill it after 5 [s] if node() is in Nodes
@@ -73,7 +73,7 @@ hera_sync_measure(Nodes) ->
             timer:sleep(5000),
             exit(Pid, killed),
             timer:sleep(5000),
-            sensor_fusion:stop_all();
+            movement_detection:stop_all();
         false ->
             ok
     end.
@@ -88,11 +88,11 @@ hera_sub(N) ->
     end,
     lists:foreach(Starter, Seq),
     if
-        node() == sensor_fusion@sebastien ->    % Isn't really useful. This was only to show ome inner working of Hera in the 2021's thesis.
+        node() == movement_detection@sebastien ->    % Isn't really useful. This was only to show ome inner working of Hera in the 2021's thesis.
             timer:sleep(5000),
             exit(global:whereis_name(hera_sub), killed),
             timer:sleep(5000),
-            sensor_fusion:stop_all();
+            movement_detection:stop_all();
         true ->
             ok
     end.
@@ -107,7 +107,7 @@ hera_sync(N) ->
     end,
     lists:foreach(Starter, Seq),
     if
-        node() == sensor_fusion@sebastien ->    % Isn't really useful. This was only to show ome inner working of Hera in the 2021's thesis.
+        node() == movement_detection@sebastien ->    % Isn't really useful. This was only to show ome inner working of Hera in the 2021's thesis.
             Killer = fun(Name) ->
                 {ok, Pid} = hera_sub:subscribe(Name),
                 exit(Pid, killed)
@@ -115,7 +115,7 @@ hera_sync(N) ->
             timer:sleep(5000),
             lists:foreach(Killer, Names),
             timer:sleep(5000),
-            sensor_fusion:stop_all();
+            movement_detection:stop_all();
         true ->
             ok
     end.

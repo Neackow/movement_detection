@@ -48,7 +48,7 @@ set_state_crate(MovementDetected) ->
 % Has to be public in order to be called by apply_after.
 % Also, in parallel, "ping" the Raspberry board to tell it the receiver is still alive.
 checkingConnection(Counter) ->
-    Connected = net_adm:ping(sensor_fusion@nav_1),
+    Connected = net_adm:ping(movement_detection@nav_1),
     if Connected == pang ->
         NewCounter = Counter#counter{value = Counter#counter.value + 1};
     true ->

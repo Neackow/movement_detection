@@ -1,5 +1,5 @@
 ## Name of the node
--sname sensor_fusion
+-sname movement_detection
 
 ## Cookie for distributed erlang
 -setcookie MyCookie

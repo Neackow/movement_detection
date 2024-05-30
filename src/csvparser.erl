@@ -6,7 +6,7 @@
 %% API
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% CSV : "../measures/Anav3_sensor_fusion@nav_1.csv"
+% CSV : "../measures/Anav3_movement_detection@nav_1.csv"
 % return a list of the column Index
 % For nav_3 acceleration are in 3, 4, 5
 parse_CSV(CSV, Index) ->

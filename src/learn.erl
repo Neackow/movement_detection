@@ -115,7 +115,7 @@ average(List, Size, New_L) ->
 
 % export the gesture to the file
 to_file(Gesture) ->
-    file:write_file("sensor_fusion/lib/sensor_fusion-1.0.0/src/gesture", io_lib:fwrite("~p\n", [Gesture]), [append]).
+    file:write_file("movement_detection/lib/movement_detection-1.0.0/src/gesture", io_lib:fwrite("~p\n", [Gesture]), [append]).
 
 % export AV_SIZE for others modules
 av_size() ->

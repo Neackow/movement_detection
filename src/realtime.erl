@@ -10,7 +10,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 start(Type, Maxtime, Period) ->
-    [{_, _,StartTime,_}] = hera_data:get(nav3, sensor_fusion@nav_1),
+    [{_, _,StartTime,_}] = hera_data:get(nav3, movement_detection@nav_1),
     case Type of 
     once ->
         io:format("Countdown!~n"),
@@ -34,7 +34,7 @@ collect_data_over_time(Maxtime) ->
     collect_data_over_time(Maxtime, [], 0).
 
 collect_data_over_time(Maxtime, List, LastT) ->
-    [{_, _,Time, Data}] = hera_data:get(nav3, sensor_fusion@nav_1), %[{_, _,Time, Data}]
+    [{_, _,Time, Data}] = hera_data:get(nav3, movement_detection@nav_1), %[{_, _,Time, Data}]
 
     if Time > Maxtime ->
         io:format("Done!~nCalculating...~n"),
@@ -97,14 +97,14 @@ grdos(Maxtime, Period) ->
 % ======================= </EXPLANATIONS FOR THE GRDOS FUNCTION> =======================
 
 grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ, Counter) ->
-    [{_, _,Time, Data}] = hera_data:get(nav3, sensor_fusion@nav_1), % hera_data:get answers back with the structure {Node, Seq, Timestamp, Data}
+    [{_, _,Time, Data}] = hera_data:get(nav3, movement_detection@nav_1), % hera_data:get answers back with the structure {Node, Seq, Timestamp, Data}
     if Time > Period andalso Period > 0 ->
         io:format("~n~n~n"), % Just to make it more readable
         io:format("End of Timer!~nCalculating...~n"),
         %classify:classify_new_gesture(GestureList); % Initially: classify the gesture with whatever data is present. Bad for me.
         % New version: at the end of the timer, automatically stop the crate.
-        net_adm:ping(sensor_fusion@orderCrate), 
-        rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [stopCrate]);
+        net_adm:ping(movement_detection@orderCrate), 
+        rpc:call(movement_detection@orderCrate, sendOrder, set_state_crate, [stopCrate]);
     true ->
         if Time == LastT ->
             grdos(TO, Period, AS, List, SizeL, GestureList, Time, TSM, LastX, LastY, LastZ, Counter); % Skip if no new data
@@ -126,8 +126,8 @@ grdos(TO, Period, AS, List, SizeL, GestureList, LastT, TSM, LastX, LastY, LastZ,
                 FirstElement = lists:nth(1,AvgZ), % This is used to extract the atom from the list.
                 % Immediately detects a stop and send it. Do not increment the counter, as it would interfere with the end of algorithm routine.
                 if FirstElement == nn ->
-                    net_adm:ping(sensor_fusion@orderCrate),
-                    rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [stopCrate]);
+                    net_adm:ping(movement_detection@orderCrate),
+                    rpc:call(movement_detection@orderCrate, sendOrder, set_state_crate, [stopCrate]);
                 true ->
                     ok
                 end,

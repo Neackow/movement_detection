@@ -36,20 +36,20 @@ classify_new_gesture(List) ->
     if Accuracy >= 0.7 ->
         % Here: call the function from the other GRiSP to send the movement. 
         % Only done when the accuracy is good enough (security measure). This will help a bit with forbidding some movements.
-        net_adm:ping(sensor_fusion@orderCrate), % To connect the node. I could do it only once, but since the same code is used on both GRiSP,
+        net_adm:ping(movement_detection@orderCrate), % To connect the node. I could do it only once, but since the same code is used on both GRiSP,
                                                 % the risk would be that GRiSP2 tries to connect... to GRiSP2. So, redo it here, it's no big deal.
-        rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [Name]),
+        rpc:call(movement_detection@orderCrate, sendOrder, set_state_crate, [Name]),
         io:format("Name : ~p, with Acc : ~p~n", [Name, Accuracy]);
     true ->
-        net_adm:ping(sensor_fusion@orderCrate),
-        rpc:call(sensor_fusion@orderCrate, sendOrder, set_state_crate, [stopCrate]), % Stop the robot in case of wrong gesture.
+        net_adm:ping(movement_detection@orderCrate),
+        rpc:call(movement_detection@orderCrate, sendOrder, set_state_crate, [stopCrate]), % Stop the robot in case of wrong gesture.
         io:format("Too low Accuracy, No gesture recognized~n")
     end,
     {Name, Accuracy}.
 
 % For execution on the GRiSP board
 import_gesture() ->
-    {_, Data} = file:read_file("sensor_fusion/lib/sensor_fusion-1.0.0/src/gesture"),
+    {_, Data} = file:read_file("movement_detection/lib/movement_detection-1.0.0/src/gesture"),
     Gestures = string:tokens(binary_to_list(Data), "\n"),
 
     Cleaned_Gestures = [string:substr(G, 2, length(G)-2) || G <- Gestures],

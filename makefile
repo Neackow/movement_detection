@@ -1,8 +1,8 @@
 .PHONY: liveView test
 
-# deploy-hostname: build and deploy sensor_fusion on SD card
+# deploy-hostname: build and deploy movement_detection on SD card
 deploy-%:
-	NAME=$* rebar3 grisp deploy -n sensor_fusion -v 1.0.0
+	NAME=$* rebar3 grisp deploy -n movement_detection -v 1.0.0
 
 # screen: show the screen of the grisp connected by usb3 cable
 screen:
@@ -10,17 +10,17 @@ screen:
 
 # remote-hostname: open a remote shell connected to hostname
 remote-%:
-	erl -sname remote_$* -remsh sensor_fusion@$* -setcookie MyCookie -kernel net_ticktime 8
+	erl -sname remote_$* -remsh movement_detection@$* -setcookie MyCookie -kernel net_ticktime 8
 
 # shell: open a development shell (not a clean start)
 shell:
-	rebar3 as computer shell --sname sensor_fusion --setcookie MyCookie
+	rebar3 as computer shell --sname movement_detection --setcookie MyCookie
 
-# run_local: start sensor_fusion in release mode (clean start)
+# run_local: start movement_detection in release mode (clean start)
 run_local:
-	./_build/computer/rel/sensor_fusion/bin/sensor_fusion console # Should change computer by grisp?
+	./_build/computer/rel/movement_detection/bin/movement_detection console # Should change computer by grisp?
 
-# local_release: build sensor_fusion in release mode for the computer
+# local_release: build movement_detection in release mode for the computer
 local_release:
 	rebar3 as computer release
 
