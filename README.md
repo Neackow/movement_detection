@@ -363,7 +363,22 @@ On Ubuntu, the driver should be installed by default. If not, you can follow thi
 
 ### Installing the application
 
-
+&emsp;Go to the git repository ([here](https://github.com/grisp/grisp/wiki/Building-the-VM-from-source)). Clone the git wherever you want it to be on your computer.
+_hera_ and _hera_synchronization_ are added using the build files, like “_rebar.config_”. Technically, you
+do not need to install them on your computer in order for the whole application to work.
+&emsp;This version of the application uses **numerl**, a custom NIF for fast matrix operations. To use
+the **numerl** NIF, you must first compile a custom version of OTP. This can be achieved using a
+Docker or a toolchain. The previous user manual says to follow this [tutorial](https://github.com/grisp/grisp/wiki/Building-the-VM-from-source) and install a Docker
+by adding the following line to the “_grisp/build/toolchain_” section of “_rebar.config_”:
+``` erlang 
+{grisp, [
+  {build, [
+    {toolchain, [
+      {docker, "grisp/grisp2-rtems-toolchain"}
+    ]}
+  ]}
+]}
+```
 
 
 
