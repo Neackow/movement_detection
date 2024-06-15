@@ -103,16 +103,16 @@ version details where to find the files, which helps the process.):
 
 ``` erlang
 { plugins , [
-{ rebar3_hex ,
-{ git , " https :// github . com / erlef / rebar3_hex . git " ,
-{ branch , " main "}
-}
-} ,
-{ rebar3_grisp ,
-{ git , " https :// github . com / grisp / rebar3_grisp . git " ,
-{ branch , " master "}
-}
-}
+  { rebar3_hex ,
+    { git , " https :// github . com / erlef / rebar3_hex . git " ,
+      { branch , " main "}
+    }
+  } ,
+  { rebar3_grisp ,
+    { git , " https :// github . com / grisp / rebar3_grisp . git " ,
+      { branch , " master "}
+  }
+  }
 ]}.
 
 ```
