@@ -545,7 +545,8 @@ folders. The first user manual mentions that it is only needed to deal with that
 but it is not the case: if you modify anything in Hera, in order to have the new version in the
 GRiSP2 board, you need to remove that file everywhere. Note: “_rebar.lock_” is where the version
 of dependencies are locked. This way our builds are reproducible, meaning if no code has been
-changed in a repository, the build on the repository should always have the same result([https://github.com/erlang/rebar3/issues/2604](https://github.com/erlang/rebar3/issues/2604)). If you
+changed in a repository, the build on the repository should always have the same result
+([https://github.com/erlang/rebar3/issues/2604](https://github.com/erlang/rebar3/issues/2604)). If you
 forget to delete this and that you brought changes to the files, you will waste time building the
 application, then testing it on the board only to realised it is still the old version.
 
@@ -584,6 +585,7 @@ Next, to deploy, the first thing to do is to format each SD-card as _fat32_. It 
 name it _GRISP_. The easiest way to achieve that is to use a partitioning tool like _KDE Partition
 Manager_ or similar. You only need to do this once. Generally, the SD-card of your board should
 already be formatted. Beware to adapt the _vm.args_ file to the name you give here.
+
 &emsp;Now, plug the SD-card in your computer and use the _makefile_ again to deploy the software on
 each SD-card with the command:
 ```bash
