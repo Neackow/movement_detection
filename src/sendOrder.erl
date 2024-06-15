@@ -179,7 +179,7 @@ movementComparison(Movement,Nbr) ->
 % =======================================================================
 
 init([]) ->
-    process_flag(trap_exit, true), % Not really useful if I don't need to deal with something when the gen_server goes down.
+    process_flag(trap_exit, true), % Not really useful if I do not need to deal with something when the gen_server goes down.
     % Display message to the console: allows to see if the function is correctly being setup from the shell.
     io:format("Object controller is being setup!~n"),
     % Change LED colors: allow to visually tell if the process has been launched, or not.

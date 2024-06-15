@@ -3,7 +3,7 @@
 -export([to_file/1, learn/2, learn_CSV/2, analyze/1, analyze_CSV/1, regroup/1, average/1, av_size/0]).
 -import(csvparser, [parse_CSV/2,  print_list/1]). % can also use csvparser:parse(..) instead of import
 -define(AXIS, [x, y, z]).
--define(AV_SIZE, 50). % can be tuned depending on the quality of the results
+-define(AV_SIZE, 50). % can be tuned depending on the quality of the results. Should try to reduce it.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% API

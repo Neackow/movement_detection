@@ -5,7 +5,7 @@
 -export([import_gesture/0, classify_new_gesture/1, classify_new_gesture_CSV/1]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% API
+%%% API
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Used by realtime.erl
@@ -57,7 +57,7 @@ import_gesture() ->
     List_Gestures.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Internal functions
+%%% Internal functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 % String to list of atoms
@@ -134,7 +134,7 @@ finish_list(List, N) ->
 
 
 %%%%%%%%%%%%%%%%%%%%%
-% FOR CSV
+%%% FOR CSV
 %%%%%%%%%%%%%%%%%%%%%
 
 % CSV : "../measures/hc1.csv"

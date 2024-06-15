@@ -18,7 +18,7 @@ shell:
 
 # run_local: start movement_detection in release mode (clean start)
 run_local:
-	./_build/computer/rel/movement_detection/bin/movement_detection console # Should change computer by grisp?
+	./_build/computer/rel/movement_detection/bin/movement_detection console
 
 # local_release: build movement_detection in release mode for the computer
 local_release:
@@ -44,12 +44,13 @@ clean:
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Added by Nicolas Isenguerre, for ease of use.
+# Added by Nicolas Isenguerre in 2024, for ease of use.
 # push: push the updated code for hera from another folder
 # Call it with make push_hera COMMIT="yourcomment"
 push_hera:
 	./pushHera.sh "$(COMMIT)"
-	
+
+# Extended version of the 'clean' command. Also removes the _grisp folder for complete deletion of previous build.
 clear:
 	rm -rf ./_build
 	rm -rf ./_grisp

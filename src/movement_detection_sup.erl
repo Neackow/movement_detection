@@ -1,4 +1,4 @@
-% @doc movement_detection top level supervisor.
+% @doc movement_detection top level supervisor. Only used at start, truly.
 % @end
 -module(movement_detection_sup).
 

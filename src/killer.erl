@@ -1,3 +1,5 @@
+% Module not really useful for the app. Left here because it was originally used by the creators of Hera2.0
+
 -module(killer).
 
 -export([launch/2]).

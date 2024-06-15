@@ -9,7 +9,7 @@
 -define(VAR_R, 0.01).
 
 
-% Decide whether or not to print the comments. Remember to change it in your environment.
+% Decide whether or not to print the comments. Remember to change it in your environment (hera environment variable).
 output_log(Message, Args) ->
     ShowLogs = application:get_env(hera, show_log, false), 
     if 
@@ -20,7 +20,7 @@ output_log(Message, Args) ->
     end.
 
 
-% Decide whether or not to print the comments. Remember to change it in your environment.
+% Decide whether or not to print the comments. Remember to change it in your environment (hera environment variable).
 output_log_spec(Message, Args) ->
     {{Year, Month, Day}, {Hour, Min, Sec}} = calendar:now_to_datetime(erlang:timestamp()),
     DisplayedTime = list_to_binary(io_lib:format("~.2.0w:~.2.0w:~.2.0w", [Hour, Min, Sec])),

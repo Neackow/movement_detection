@@ -1,5 +1,5 @@
 {application, movement_detection, [
-    {description, "A GRiSP application for sensor fusion"},
+    {description, "A GRiSP application for movement detection"},
     {vsn, "1.0.0"},
     {registered, [movement_detection_sup]},
     {mod, {movement_detection, []}},

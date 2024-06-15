@@ -2,7 +2,7 @@
 
 -export([start/3]).
 
-% Set to 0 at initialisation. It is used to detect the end of the algorithm.
+% Set to 0 at initialisation. It is used to detect the end of the algorithm (when counter == 3).
 -record(counter, {value = 0}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
