@@ -86,7 +86,35 @@ computer.
 &emsp; At the “_cd rebar3_” followed by “_./bootstrap_” step, the following error message appeared:
 
 ``` bash
-OTP Application crypto not available . Please fix your Erlang install to support it and try again .
+OTP Application crypto not available. Please fix your Erlang install to support it and try again .
+```
+
+This happened because the author installed ssl (ssh command in earlier steps) _after_ installing
+Erlang. Do not do that. If you did, delete the installation then build and redo with all packages
+installed. Once it is done, “_./bootstrap_” should work better (green lines with “===>” at the
+start). You can then proceed with “_./rebar3 local install_”.
+
+#### GRiSP Rebar3 plugin
+
+&emsp; In the previous user manual, it says to add the plugin configuration for GRiSP in the file
+“_/.config/rebar3/rebar.config_”... Which did not exist. Create the directory and “_rebar.config_” file
+and then add the following plugin configuration (Note: this is not the same as in the previous user manual. Indeed, it struggled to load the plugins. This update
+version details where to find the files, which helps the process.):
+
+``` erlang
+{ plugins , [
+{ rebar3_hex ,
+{ git , " https :// github . com / erlef / rebar3_hex . git " ,
+{ branch , " main "}
+}
+} ,
+{ rebar3_grisp ,
+{ git , " https :// github . com / grisp / rebar3_grisp . git " ,
+{ branch , " master "}
+}
+}
+]}.
+
 ```
 
 
