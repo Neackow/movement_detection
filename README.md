@@ -198,6 +198,12 @@ Go back to the tutorial to complete everything regarding the “_erl_inetrc_” 
 ``` bash
 sudo vi /etc/hosts
 ```
+For example, a completed “_/etc/hosts_” file would look like:
+``` bash 
+    127.0.1.1       hostname_computer
+    192.168.43.215  board_1
+    192.168.43.6    board_2
+```
 
 
 
