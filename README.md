@@ -19,6 +19,7 @@
 ### ** Disclaimer **
 <div align="justify"> &emsp; The following tutorial was done on a computer running on Linux-Ubuntu 20.04, installed in February 2024. The author cannot guarantee it will work for newer versions (though it should) or for other OS (E.g.: do not even try to use wsl on Windows. There are a lot of dependencies that do not exist in wsl but that are required to make this whole thing work. Linux is the go-to OS for the GRiSP environment.), nor does he guarantee that updated versions of the packages required to run Erlang and compile it will work with GRiSP. This tutorial, furthermore, is not as detailed as one would hope it to be: the installation process took place in early February, whilst the writing of this section was done in late May. If any questions emerge, the author will gladly help future users with their struggles. Note: another great source of help is the GRiSP [Slack channel](https://github.com/grisp/grisp/wiki). </div>
 
+
 <div align="justify"> &emsp; Some parts of this tutorial are directly inspired by the GRiSP wiki. Refer to this [website](https://github.com/grisp/grisp/wiki) (GRiSP Wiki). </div>
 
 
