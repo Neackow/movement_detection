@@ -148,6 +148,35 @@ can type the following in the shell:
 rebar3 update && rebar3 plugins list
 ```
 
+#### First tests
+
+&emsp; With that, everything should be good regarding Erlang! You can try the tutorials given by the
+GRiSP team (to create: [https://github.com/grisp/grisp/wiki/Creating-Your-First-GRiSP-Application](https://github.com/grisp/grisp/wiki/Creating-Your-First-GRiSP-Application) and deploy: [https://github.com/grisp/grisp/wiki/Deploying-a-GRiSP-Application](https://github.com/grisp/grisp/wiki/Deploying-a-GRiSP-Application) the application) that flashes the LED. To create a new app, in the rebar3 folder, type:
+
+``` bash
+rebar3 new grispapp name=Name dest=/whereisyourSDcard
+```
+e.g.
+``` bash
+rebar3 new grisapp name=Whatever dest=/media/nicolas/GRISP
+```
+
+&emsp; This creates a folder in rebar3. You can take this folder wherever you want, the commands for
+rebar3 will work if you added rebar3 to your PATH.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
