@@ -164,7 +164,17 @@ rebar3 new grisapp name=Whatever dest=/media/nicolas/GRISP
 &emsp; This creates a folder in rebar3. You can take this folder wherever you want, the commands for
 rebar3 will work if you added rebar3 to your PATH.
 
+### Connection over serial
 
+&emsp; To open the Erlang shell on your computer to directly work on the GRiSP2, use:
+
+``` bash
+sudo picocom /dev/ttyUSB1 --baud 115200 --echo
+```
+
+in your application’s folder. To leave picocom without cancelling the program (which is achieved
+by “_q()._” in the Erlang shell), use “_ctrl+a_” followed by “_ctrl+q_”. Note that this only works for
+tty, as when you use a remote shell (see later), type first “_q()._” then “_ctrl+c_”.
 
 
 
