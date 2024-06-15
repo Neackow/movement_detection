@@ -259,7 +259,7 @@ observed that the ”Silent” mode of the phone could disturb the connection.
 &emsp; Due to the **numerl** NIF, the author never managed to run the Erlang application on his computer.
 Hereafter are some troubles he faced while trying to do so.
 
-&emsp; Using “make shell” worked, but the clean start “make local release && make run local” did not,
+&emsp; Using “make shell” worked, but the clean start “make local_release && make run_local” did not,
 with error: “**Could not start kernel pid, application controller, invalid config data: application:
 grisp; duplicate parameter: devices**”. In the author’s “_home/nicolas/TFE/sensor_fusion/_build/
 computer/rel/sensor_fusion/releases/1.0.0/_” folder, several files were available. In “_sys.config_”,
@@ -327,6 +327,42 @@ previously was. Upon trying to build once more, the following message appeared i
     %% SO apparently, it DOES copy it. So the question is: 
     %% why is it not available?
 ```
+&emsp; As the author later realised that he did not need to launch the application on his computer, he
+gave up on the matter. This problem is thus left with no answer.
+
+&emsp; Note about “_make local_release && make run_local_”: the problem is that “_numerl.so_” is not
+loading, and apparently, according to Sébastien Kalbusch (one of the two Hera2.0 developers), it
+is normal and if one wanted to have the possibility to run the code directly on the shell, the NIF
+should be discarded on the computer. It is to be noted that the only advantage of having the
+application run on the computer is to have the logs directly appearing on it without having to
+remove the SD card at each test.
+
+### Installing the Arduino IDE
+
+&emsp; The author would like to point out that this section refers a lot to the ESP32, as it was the first
+micro-controller that he attempted to use. However, every manipulation done here will be useful
+for the Raspberry Pi Pico W.
+
+&emsp; The Arduino IDE has been used to code the C++ code of the micro-controller. Another way
+of coding in Arduino but in _VSCode_ is to use _Platformio_, but the author does not especially
+recommend it, as it seemed unreliable on his computer. It worked (vaguely), but was not really
+intuitive nor fast to deploy the code on the board.
+
+&emsp; First, install the Arduino IDE itself by following the tutorial you can find [here](https://docs.arduino.cc/software/ide-v2/tutorials/getting-started/ide-v2-downloading-and-installing/). Next, upon
+following this [tutorial](https://bromleysat.com/installing-the-esp32-board-in-arduino-ide), the author faced several difficulties:
+  - The _PySerial_ package was not installed on the computer. Follow this [tutorial](https://www.geeksforgeeks.org/how-to-install-python-serial-package-on-linux/) to install
+it;
+  - He had some struggles with the ports not being detected (typically, _dev/ttyUSB0_): following
+what was said on this [page](https://askubuntu.com/questions/133235/how-do-i-allow-non-root-access-to-ttyusb0), by using the part mentioning the following command:
+``` bash
+sudo usermod -a -G dialout $USER
+```
+After restarting the computer, the problem was solved.
+  - One could face port problems if the appropriate driver (UART-USB CP120X) is not installed.
+On Ubuntu, the driver should be installed by default. If not, you can follow this [tutorial](https://askubuntu.com/questions/941594/installing-cp210x-driver);
+
+### Installing the application
+
 
 
 
