@@ -77,6 +77,17 @@ who would?
 &emsp; The rest of the installation process should go fine. You now have Erlang installed on your
 computer.
 
+#### rebar3
+
+&emsp; This is required to build Erlang projects. Follow the “getting started” tutorial on this [web page](https://github.com/erlang/rebar3).
+
+#### _Struggles faced_
+
+&emsp; At the “_cd rebar3_” followed by “_./bootstrap_” step, the following error message appeared:
+
+``` bash
+OTP Application crypto not available . Please fix your Erlang install to support it and try again .
+```
 
 
 
