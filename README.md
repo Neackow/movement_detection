@@ -1,8 +1,8 @@
-&ensp; NOTE: this README is the exact copy of Appendix E of the final thesis .pdf, which can be found by clicking [here](https://github.com/Neackow/movement_detection/blob/main/ISENGUERRE_50041800_2024.pdf). Do not hesitate to ask Pr. Peter Van Roy for the link to the official file from the dial.mem library. Also note that some files were deleted in this version of the project. To see the deleted files, refer to the previous theses: 
+&emsp; NOTE: this README is the exact copy of Appendix E of the final thesis .pdf, which can be found by clicking [here](https://github.com/Neackow/movement_detection/blob/main/ISENGUERRE_50041800_2024.pdf). Do not hesitate to ask Pr. Peter Van Roy for the link to the official file from the dial.mem library. Also note that some files were deleted in this version of the project. To see the deleted files, refer to the previous theses: 
   - Lucas Nélis' version (numerl developper): [https://github.com/lunelis/sensor_fusion](https://github.com/lunelis/sensor_fusion) ;
   - Hera2.0: the original version, by Sébastien Kalbusch and Vincent Verpoten: [https://github.com/sebkm/sensor_fusion](https://github.com/sebkm/sensor_fusion) ;
 
-&ensp; **BEWARE**: these versions are outdated when it comes to this thesis. All the necessary files are stored in this repository)
+&emsp; **BEWARE**: these versions are outdated when it comes to this thesis. All the necessary files are stored in this repository)
 
 # Updated user manual
 
