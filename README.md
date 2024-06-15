@@ -382,7 +382,7 @@ and then run the command:
 ``` bash
 rebar3 grisp build --docker
 ```
-which should generate a “_grisp” folder containing the VM running on the GRiSP. However...
+which should generate a “__grisp_” folder containing the VM running on the GRiSP. However...
 
 #### _Struggles faced_
 
@@ -403,6 +403,7 @@ he followed the advice given on this [page](https://phoenixnap.com/kb/cannot-con
 next, after putting the right Erlang/OTP version in the “_rebar.config_” file, the author reached a
 new error, saying it did not find a C compiler for the code, despite having “_gcc_” installed on the
 computer.
+
 &emsp;Despite best efforts, he could not make the Docker work. Instead:
 
 #### Installing a toolchain
