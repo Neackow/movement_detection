@@ -14,7 +14,7 @@
 
 ## How to install Erlang, Hera
 
-&emsp; Each part starts with the “go-to” procedure to complete the installation. An erratum and summary of problems faced at each step by the author can be found in the _Struggles faced_ part of each section.
+&emsp; Each part starts with the “go-to” procedure to complete the installation. An erratum and summary of problems faced at each step by the author can be found in the **_Struggles faced_** part of each section.
 
 ### ** Disclaimer **
 
@@ -61,6 +61,9 @@ can be found in this [website](https://www.howtogeek.com/658904/how-to-add-a-dir
 commands from those which can be used in a Linux shell.
 
 #### _Struggles faced_
+
+&emsp; Upon trying : “kerl install 25.3 /usr/local/lib/erlang/25.3”, an “<span style="color:red">Access Denied</span>” message appeared. This was due to the fact that the user profile on the computer did not have access to the
+directories mentioned. For any directory to which access is denied but is required, in the shell, go to said directory and type:
 
 
 
