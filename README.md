@@ -114,8 +114,41 @@ version details where to find the files, which helps the process.):
         }
     }
 ]}.
-
 ```
+If you get a “no escript” error message, it is because the system detects no active Erlang/OTP
+installations. Make sure to have an active one in the shell in which you are doing the installation
+procedures.
+
+&emsp; Some notes at this point:
+  - To find a command which you already typed earlier rapidly, in the shell, type: “_ctrl+r_” and
+the beginning of the command;
+  - Do not forget that in order to run rebar3, etc., you should always have an active and valid
+Erlang session running. Typically, every time you start a shell, type:
+
+``` bash
+. /usr/local/lib/erlang/25.3/activate
+```
+
+The version being whatever version you have. You can also add rebar3 to your PATH
+(recommended, at each shell launch, in order to have the rebar3 command work everywhere),
+using:
+
+``` bash
+export PATH=\$PATH:$\sim$/.cache/rebar3/bin
+```
+
+&emsp; Typically, the author would start each new shell by using “_ctrl+r_” and typing the beginning
+of one of the commands. Do not hesitate to put them one after the other using “_&&_” so that
+everything is done in one go.
+
+&emsp; Lastly, to verify that rebar3 is correctly installed (and to update the plugins if need be), you
+can type the following in the shell:
+
+``` bash 
+rebar3 update && rebar3 plugins list
+```
+
+
 
 
 
