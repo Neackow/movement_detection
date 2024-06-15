@@ -175,7 +175,7 @@ stop(_State) -> ok.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 node_type() ->
-    Host = lists:nthtail(14, atom_to_list(node())), % Returns the actual node, so here, movement_detection@nav_1. It returns AFTER the 14th element, meaning the @.
+    Host = lists:nthtail(19, atom_to_list(node())), % Returns the actual node, so here, movement_detection@nav_1. It returns AFTER the 14th element, meaning the @.
     IsNav = lists:prefix("nav", Host),              % Detects the nav in the name.
     IsSonar = lists:prefix("sonar", Host),
     IsOrder = lists:prefix("orderCrate", Host),
