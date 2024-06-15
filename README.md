@@ -67,6 +67,14 @@ directories mentioned. For any directory to which access is denied but is requir
 
 `sudo chmod 777 directoryName`
 
+This will allow to read, write and execute on the directory for any user on the computer. If the
+error message happens on any sub-directory, do the same on it. Beware: it is ugly and can be
+dangerous. Anyone on your computer can now modify your Erlang installation. But, seriously,
+who would?
+
+&emsp; The rest of the installation process should go fine. You now have Erlang installed on your
+computer.
+
 
 
 
