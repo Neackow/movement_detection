@@ -23,6 +23,10 @@ rebar3.crashdump
 /logsL
 /measures/
 
-_grisp
+_grisp/
 .vscode
 
+grisp/grisp2/common/deploy/files/wpa.supplicant.conf
+*.txt
+plotsPID.py
+# pushHera.sh   # I recommend you to put it in the .gitignore if you put your password directly.
