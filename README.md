@@ -455,7 +455,7 @@ to change in “_hera_synchronization_”;
 
 ### Other notes
 
--  If your SD-card goes into “read only mode”, it is because the little lid on the side of the micro-SD −→ SD-card converter is put on “locked”. Simply unlock it as shown [here](https://askubuntu.com/questions/213889/microsd-card-is-set-to-read-only-state-how-can-i-write-data-on-it).
+-  If your SD-card goes into “read only mode”, it is because the little lid on the side of the micro-SD → SD-card converter is put on “locked”. Simply unlock it as shown [here](https://askubuntu.com/questions/213889/microsd-card-is-set-to-read-only-state-how-can-i-write-data-on-it).
  - The author reminds the reader that if he faces any problems, the GRiSP team is very reactive on the GRiSP Slack
 
 ## User Manual: the _movement_detection_ application
@@ -504,6 +504,7 @@ computer, add them in the {_hera_} part of the file. E.g.:
 &emsp;This sets the arguments of the Virtual Machine. You can set a new Cookie name (be careful to
 then change it every where) in the “**-setcookie**” line, or the name of the deployed application in
 the “**-sname**” line.
+
 &emsp;Next, if you followed everything that was mentioned previously, there is only one thing left to
 do in the “_rebar.config_” file, which contains all the information to build and deploy the system:
 tell the system the path to the SD-card on which you wish to deploy the application. Typically,
