@@ -176,7 +176,28 @@ in your application’s folder. To leave picocom without cancelling the program 
 by “_q()._” in the Erlang shell), use “_ctrl+a_” followed by “_ctrl+q_”. Note that this only works for
 tty, as when you use a remote shell (see later), type first “_q()._” then “_ctrl+c_”.
 
+### The Wi-Fi and connecting remotely
 
+&emsp; The author recommends that you to follow this tutorial from scratch in order to better understand what is happening. Start from a random project, typically the one which you created to do
+the LED example. Important note: you only need to have the IP address of the boards if you wish
+to connect to them remotely. Otherwise, simply doing the “_wpa_supplicant.conf_ ” part should be
+enough
+
+&emsp; First, follow the GRiSP [tutorial](https://github.com/grisp/grisp/wiki/Connecting-over-WiFI-and-Ethernet) up until “Finding out the IP address of the GRiSP board
+when using DHCP”, at which point you could face some problems, as the board maybe never
+connected to the Wi-Fi beforehand. Jump to the **GRiSP INI** section, follow it, and then follow
+**Configuring Wi-Fi**. Next, deploy the application on your SD-card as per usual. Put the SD-card
+in the board and supply it. You should see messages in the shell about _wlan0_ mentioning errors
+(_File exists_). This is not a problem. To find the IP-address of the GRiSP2 board, type:
+
+``` bash
+inet:getifaddrs().
+```
+Go back to the tutorial to complete everything regarding the “_erl_inetrc_” file and add the IP-address of the board to your host file by typing, in a normal shell:
+
+``` bash
+sudo vi /etc/hosts
+```
 
 
 
