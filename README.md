@@ -24,7 +24,7 @@
 &emsp; Some parts of this tutorial are directly inspired by the GRiSP wiki. Refer to this [website](https://github.com/grisp/grisp/wiki) (GRiSP Wiki).
 
 
-### Required hardware
+#### Required hardware
 
 &emsp; For this tutorial, one needs:
   - A computer running on Linux;
@@ -34,18 +34,33 @@
 
 &emsp; You can find all the GRiSP related hardware at [https://www.grisp.org/shop/](https://www.grisp.org/shop/).
 
-### Required software
+#### Required software
 
 &emsp; To use the system, one needs to have installed on its computer:
   - Erlang/OTP 25.0, Erts 13.2;
   - rebar3 3.22.1;
   - rebar3 hex;
   - rebar3 grisp;
-  - 
+
 &emsp; The following explains in more detail how to install these.
 
+### Setting up a development environment
 
+#### Installing Erlang
 
+&emsp; It is recommended to use a version manager to get your **Erlang installation**. _asdf_ or _kerl_ are
+fine. In this tutorial, _kerl_ will be explained.
+
+&emsp; The first thing to do is to follow [this tutorial](https://github.com/kerl/kerl)
+to install _kerl_. If you are using a new computer,
+many packages need to be installed in parallel. A list of such packages can be found [here](https://github.com/asdf-vm/asdf-erlang/pull/10/files). Note
+that this is technically for _asdf_, but the same goes for _kerl_. Moreover, the package “_wxWidget_” did
+not work for the author. Next, install Erlang itself using _kerl_. Then, it is recommended to add the
+installation’s activation to the system’s PATH. A tutorial on how to add something to the PATH
+can be found in this [website](https://www.howtogeek.com/658904/how-to-add-a-directory-to-your-path-in-linux/). Be careful: if you modify directly the _bashrc_ file, it uses different
+commands from those which can be used in a Linux shell.
+
+#### _Struggles faced_
 
 
 
