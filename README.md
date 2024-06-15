@@ -12,7 +12,7 @@
 
 &emsp; Both of these are heavily inspired by the previous user manual, which can be found [here](https://github.com/lunelis/sensor_fusion). This user manual is also a great source of information concerning the older versions of the system.
 
-## How to install Erlang, Hera
+## How to install Erlang, Hera, ...
 
 &emsp; Each part starts with the “go-to” procedure to complete the installation. An erratum and summary of problems faced at each step by the author can be found in the **_Struggles faced_** part of each section.
 
@@ -424,11 +424,11 @@ e.g., for the author:
 ```erlang
 {directory, "/home/nicolas/TFE/grisp2-rtems-toolchain/rtems/5"}
 ```
-You should now be able to compile the application. Go to the directory and type “_rebar3 grisp build_”. Again, the build will take a while.
+&emsp;You should now be able to compile the application. Go to the directory and type “_rebar3 grisp build_”. Again, the build will take a while.
 
 #### Having your own Hera repositories
 
-In order to modify the code of Hera and debug the application, you need to create your own
+&emsp;In order to modify the code of Hera and debug the application, you need to create your own
 repositories. Here, step by step, is how to do it:
   - Go on your GitHub account;
   - Create the repositories: the author recommends keeping “_hera_” and “_hera_synchronization_”
@@ -455,8 +455,45 @@ to change in “_hera_synchronization_”;
 
 ### Other notes
 
+-  If your SD-card goes into “read only mode”, it is because the little lid on the side of the micro-SD −→ SD-card converter is put on “locked”. Simply unlock it as shown [here](https://askubuntu.com/questions/213889/microsd-card-is-set-to-read-only-state-how-can-i-write-data-on-it).
+ - The author reminds the reader that if he faces any problems, the GRiSP team is very reactive on the GRiSP Slack
 
+## User Manual: the _movement_detection_ application
 
+### Adapting the configuration files to your system
+
+&emsp;There are three files in the “_/config_” folder:
+
+#### computer.config.src
+
+&emsp;The only thing you need to change is within the {_sync_node_optional_} part, where you need to
+put your boards’ name and your computer’s name. Note: your computer’s name is here required
+only if you are intent on launching the application on it, and use the computer as a node of the
+network. E.g.:
+```erlang
+{sync_nodes_optional, [
+    movement_detection@neackow_z4,
+    movement_detection@nav_1,
+    movement_detection@orderCrate
+]},
+```
+&emsp;Be careful: if you have “-” in your computer’s name, the deployment of the application will not
+work. To change your computer’s name on Linux:
+  - On the top left corner, go to “_Activities_”;
+  - Search for “_About_”;
+  - The first thing will be the computer name: you can change it to whatever, without a “-” or
+arithmetic sign.
+
+&emsp;Note: if you add any “_hera_” environment variables and that you want them to affect your
+computer, add them in the {_hera_} part of the file. E.g.:
+```erlang
+{hera, [
+    {log_data, false},
+    {show_log, false},
+    {show_log_spec,false},
+    {log_BL,false}
+]},
+```
 
 
 
