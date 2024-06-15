@@ -200,10 +200,17 @@ sudo vi /etc/hosts
 ```
 For example, a completed “_/etc/hosts_” file would look like:
 ``` bash 
-    127.0.1.1       hostname_computer
-    192.168.43.215  board_1
-    192.168.43.6    board_2
+127.0.1.1       hostname_computer
+192.168.43.215  board_1
+192.168.43.6    board_2
 ```
+and a completed “_erl_inetrc_” would look like:
+``` erlang 
+{host, {192,168,43,32}, ["neackow_z4"]}.
+{host, {192,168,43,215}, ["nav_1"]}.
+{host, {192,168,43,6}, ["orderCrate"]}.
+```
+
 
 
 
