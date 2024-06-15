@@ -575,8 +575,101 @@ command of “_makefile_”:
 ```bash
 make clear
 ```
+You can finally build and deploy the application. To build, type:
+```bash
+rebar3 grisp build
+```
+Next, to deploy, the first thing to do is to format each SD-card as _fat32_. It is also suggested to
+name it _GRISP_. The easiest way to achieve that is to use a partitioning tool like _KDE Partition
+Manager_ or similar. You only need to do this once. Generally, the SD-card of your board should
+already be formatted. Beware to adapt the _vm.args_ file to the name you give here.
+&emsp;Now, plug the SD-card in your computer and use the _makefile_ again to deploy the software on
+each SD-card with the command:
+```bash
+make deploy-hostname
+```
+where _hostname_ is the desired name of the GRiSP2 board.
 
+### How to use the application
 
+&emsp;Now that the SD-card is ready, you can plug it into the GRiSP2 board. If your board’s name is
+starting by _nav_, make sure to also plug a PNAV in the SPI2 port of the GRiSP2. If the board’s
+name starts by _order_, then no sensors are expected by the application. Also, make sure to have
+your Wi-Fi hotspot up and ready.
+
+#### The detector
+
+&emsp; Let us suppose that the board’s name is “_nav_1_” (this was chosen for historical reasons, as the previous users of Hera would have many nodes with a PNAV
+plugged-in and number them to distinguish the nodes. Here, as there is only one board with a PNAV, it is not really useful). After booting, the two LEDs should turn
+red: this is because no calibration information was found in the system. Indeed, certain sensors
+require a calibration in order to be used. Within the network, in case of restart, as long as there
+is at least one node staying alive, the information will remain available.
+
+&emsp;The gesture recognition algorithm uses the measurements from the **nav3.erl** module, which
+requires calibration to correct the gyroscope and magnetometer defaults. However, since for now
+the algorithm only uses the accelerometer data, no real calibration is required. Though, the system
+requires calibration data. The procedure to calibrate a “_nav_” board is the following:
+  - Connect serially to the Erlang shell using picocom;
+  - In the shell, type:
+```erlang
+movement_detection:set_args(nav3).
+```
+If you wish to use another sensor or another measurement method than _nav3_, refer to the [previous user manual](https://github.com/lunelis/sensor_fusion) for more detail.
+  - Text will appear in the shell. As it is not necessary to calibrate for this application, you can
+press three times “Enter” to finish the calibration step.
+
+&emsp; The LEDs are still showing red. They will only become green, indicating that there is calibration
+information in the system, when the measurements are launched. To launch measurements, type next:
+
+```erlang
+movement_detection:launch().
+```
+Note: if your system comprises many nodes, you can launch every node at once using:
+```erlang
+movement_detection:launch_all().
+```
+Next, all one has to do is launch the gesture recognition algorithm. To do so, type:
+```erlang
+movement_detection:realtime(1.5,-1).
+```
+Using these arguments, the **grdos/12** function will launch and keep looping forever due to the
+negative period. It will wait a minimum of 1.5 s between gestures to classify them, as explained
+earlier. Now, you can move the board around to perform the predefined gestures.
+&emsp; If you have trouble with getting the function started, check your Wi-Fi connection: the gesture
+recognition algorithm does not work without a stable Wi-Fi connection.
+&emsp; Note: if you want to test the effect of specific gestures without using the gesture recognition
+algorithm, you can type the following two lines in the detector’s shell:
+```erlang
+net_adm:ping(movement_detection@orderCrate).
+rpc:call(movement_detection@orderCrate,sendOrder,set_state_crate,[Name])
+```
+where **Name** is the movement whose effect you want to test. The first command will attempt
+to connect the two boards. If it outputs **pang**, it means there is a network issue. If it outputs
+**pong**, then the two boards managed to connect to each other. The second command then calls
+the function **set_state_crate/1** from the sendOrder module on the receiver, with the **Name** as
+argument.
+
+#### The receiver
+
+&emsp; Let us suppose the board’s name is “_orderCrate_”. There is nothing special to do here, beyond
+booting the board. If it was named correctly, the two LEDs should light up, respectively in a light
+blue and yellow colour, from left to right. Beware that it does not mean that the board connected
+to the Wi-Fi. This is where having a hotspot is useful, because the user can see how many devices
+are connected to it. In this application, two devices should be connected for everything to work:
+the detector and the receiver.
+
+#### What gestures can be performed in a successive manner?
+
+&emsp; Every movement combinations are possible, however, some of them were deemed “unsafe” in the
+present application and thus lead to a stop of the robot:
+  - If one movement labelled as _forward_ is followed by one movement labelled as _backward_ or
+vice-versa, the robot is stopped.
+  - If the user wants to turn the robot around but did not stop prior to this, the robot is stopped.
+
+#### Extensions to the platform and further development
+
+&emsp; If you wish to add new dynamic measurements, other sensors or new sensor fusion models, the
+author invites you to refer to the [previous user manual](https://github.com/lunelis/sensor_fusion), as nothing has changed since.
 
 
 
