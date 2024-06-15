@@ -261,8 +261,7 @@ Hereafter are some troubles he faced while trying to do so.
 
 &emsp; Using “make shell” worked, but the clean start “make local_release && make run_local” did not,
 with error: “**Could not start kernel pid, application controller, invalid config data: application:
-grisp; duplicate parameter: devices**”. In the author’s “_home/nicolas/TFE/sensor_fusion/_build/
-computer/rel/sensor_fusion/releases/1.0.0/_” folder, several files were available. In “_sys.config_”,
+grisp; duplicate parameter: devices**”. In the author’s “home/nicolas/TFE/sensor_fusion/_build/computer/rel/sensor_fusion/releases/1.0.0/” folder, several files were available. In “_sys.config_”,
 two {_devices_} variables were set. These variables were coming from the “_computer.config.src_” file
 in the “_config_” folder. The author tried to comment one of the two and rebuild.
 
