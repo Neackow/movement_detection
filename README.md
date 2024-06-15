@@ -62,7 +62,7 @@ commands from those which can be used in a Linux shell.
 
 #### _Struggles faced_
 
-&emsp; Upon trying : “kerl install 25.3 /usr/local/lib/erlang/25.3”, an “<span style="color:red">Access Denied</span>” message appeared. This was due to the fact that the user profile on the computer did not have access to the
+&emsp; Upon trying : “kerl install 25.3 /usr/local/lib/erlang/25.3”, an “<span style="color:red"> Access Denied </span>” message appeared. This was due to the fact that the user profile on the computer did not have access to the
 directories mentioned. For any directory to which access is denied but is required, in the shell, go to said directory and type:
 
 
