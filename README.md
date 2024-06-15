@@ -26,13 +26,23 @@
 
 ### Required hardware
 
-&emsp;For this tutorial, one needs:
+&emsp; For this tutorial, one needs:
   - A computer running on Linux;
   - One Wi-Fi access point: it is recommended to use a smartphone (or computer) as a hotspot, since the Eduroam network does not really like connecting on prototyping boards (for safety reasons);
   - One or more GRiSP2 boards (with SD-card);
   - Pmod™ sensors;
 
-&emsp;You can find all the GRiSP related hardware at [https://www.grisp.org/shop/](https://www.grisp.org/shop/).
+&emsp; You can find all the GRiSP related hardware at [https://www.grisp.org/shop/](https://www.grisp.org/shop/).
+
+### Required software
+
+&emsp; To use the system, one needs to have installed on its computer:
+  - Erlang/OTP 25.0, Erts 13.2;
+  - rebar3 3.22.1;
+  - rebar3 hex;
+  - rebar3 grisp;
+  - 
+&emsp; The following explains in more detail how to install these.
 
 
 
