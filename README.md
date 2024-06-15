@@ -24,3 +24,22 @@
 &emsp; Some parts of this tutorial are directly inspired by the GRiSP wiki. Refer to this [website](https://github.com/grisp/grisp/wiki) (GRiSP Wiki).
 
 
+### Required hardware
+
+&emsp;For this tutorial, one needs:
+  - A computer running on Linux;
+  - One Wi-Fi access point: it is recommended to use a smartphone (or computer) as a hotspot, since the Eduroam network does not really like connecting on prototyping boards (for safety reasons);
+  - One or more GRiSP2 boards (with SD-card);
+  - Pmod™ sensors;
+
+&emsp;You can find all the GRiSP related hardware at [https://www.grisp.org/shop/](https://www.grisp.org/shop/).
+
+
+
+
+
+
+
+
+
+
