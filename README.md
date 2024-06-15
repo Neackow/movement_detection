@@ -275,7 +275,7 @@ According to this [wiki](https://github.com/grisp/grisp/wiki/NIF-Support), there
 “_NAMEOFDRIVER_nif.c_” and this file must reside in the application’s top level folder, under the
 following path:
 ``` bash
-grisp/$<$platform$>$/$<$version$>$/build/nifs/NAMEOFDRIVER_nif.c
+grisp/<platform>/<version>/build/nifs/NAMEOFDRIVER_nif.c
 ```
 In the current case, the author tried to following path:
 ``` bash
