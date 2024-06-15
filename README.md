@@ -193,12 +193,12 @@ in the board and supply it. You should see messages in the shell about _wlan0_ m
 ``` bash
 inet:getifaddrs().
 ```
-Go back to the tutorial to complete everything regarding the “_erl_inetrc_” file and add the IP-address of the board to your host file by typing, in a normal shell:
+&emsp; Go back to the tutorial to complete everything regarding the “_erl_inetrc_” file and add the IP-address of the board to your host file by typing, in a normal shell:
 
 ``` bash
 sudo vi /etc/hosts
 ```
-For example, a completed “_/etc/hosts_” file would look like:
+&emsp; For example, a completed “_/etc/hosts_” file would look like:
 ``` bash 
 127.0.1.1       hostname_computer
 192.168.43.215  board_1
@@ -210,6 +210,50 @@ and a completed “_erl_inetrc_” would look like:
 {host, {192,168,43,215}, ["nav_1"]}.
 {host, {192,168,43,6}, ["orderCrate"]}.
 ```
+
+&emsp; You can now connect to the GRiSP2 remotely using:
+``` bash 
+erl -sname my\_remote\_shell -remsh my\_project\@my\_grisp\_board -setcookie MyCookie
+```
+and replace everything with the names you have given to your project, etc.
+
+&emsp; Be careful: connecting remotely to the GRiSP2 board does not connect directly to the board
+itself: it creates a distributed Erlang node solely for the purpose of doing a remote shell. This
+means that there is an intermediate node between the computer and the GRiSP2 board.
+
+&emsp; Also, all this is already done in the applications files (More on how to change the applications file to adapt to your computer later). All you have to do is to adapt the files
+to your computer’s name, IP address, etc. Moreover, in the applications directory, one can use the
+“_makefile_” to connect remotely, using:
+``` bash 
+make deploy-NameOfBoard
+```
+&emsp; Be careful: the board’s name is **very important** since it dictates the behaviour of the board,
+as has been explained in previous chapters. Note that this command takes the name of the board
+as a variable value and attributes it to the “_env.NAME_” variable in the “_grisp.ini.mustache_” file.
+
+&emsp; Some notes:
+  - The author tried to be smart and put his computer node twice in the “erl-inetrc” file, so
+he would not have to care about whether he was at home or not. It seems like it does
+not like having twice the same name, however. Comment the node which you do not need
+and rebuild. Note: this only applies if you use different Wi-Fi depending on where you are
+working. Again, it is advised to use your smartphone as a Wi-Fi hotspot, since it will _always_
+give the boards, computers, etc. the same IP address.
+  - Obviously, make sure the Wi-Fi network that the GRiSP2 board is trying to reach is not
+disabled.
+  -  Beware of syntax error in the “_erl_inetrc_” file. Instead of separating the numbers by a “,”
+one could type the IP address with “.”, but this does not work.
+  - If you wish to connect remotely to a node, the author believes that the computer should be
+on the same Wi-Fi as the boards, as he got a “*** ERROR: Shell process terminated! (ˆG
+to start new job) ***” error if not connected on the same network. This only applies when
+you try to connect remotely.
+  - Using your smartphone as a hotspot can lead to unexpected behaviours. Often, the GRiSP2
+board would not manage to connect to the smartphone’s Wi-Fi, despite the computer being
+able to. Or if it did, it would, out of nowhere, disconnect and never find the Wi-Fi ever
+again. It was found that this was due to the “Saving energy” mode of the phone, which
+forbids/periodically interrupts any remote connection from GRiSP2 boards to its hotspot.
+Upon deactivating it, the boards would find the Wi-Fi (almost) all the time. It was also
+observed that the ”Silent” mode of the phone could disturb the connection.
+
 
 
 
