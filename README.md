@@ -6,16 +6,22 @@
 
 # Updated user manual
 
-  In previous theses, the authors have created and updated a user manual detailing how to use
+&emsp; In previous theses, the authors have created and updated a user manual detailing how to use
 their application, whilst also globally explaining how to start up with the GRiSP board and Erlang.
 However, it was never updated for the GRiSP2 board.
 
-  The author encountered numerous problems, which were solved one by one over the course of
+&emsp; The author encountered numerous problems, which were solved one by one over the course of
 several weeks. To avoid future generations of Erlang programmers struggling with the GRiSP
 environment, the author here proposes a guide on how to install Erlang, Hera, etc., followed by a
 user manual explaining how the application developed in this thesis can be used.
 
-  Both of these are heavily inspired by the previous user manual, which can be found [here](https://github.com/lunelis/sensor_fusion). This
+&emsp; Both of these are heavily inspired by the previous user manual, which can be found [here](https://github.com/lunelis/sensor_fusion). This
 user manual is also a great source of information concerning the older versions of the system.
 
 ## How to install Erlang, Hera
+
+&emsp; Each part starts with the “go-to” procedure to complete the installation. An erratum and
+summary of problems faced at each step by the author can be found in the _Struggles faced_ part of
+each section.
+
+### ** Disclaimer **
