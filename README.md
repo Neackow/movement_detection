@@ -18,7 +18,7 @@
 
 ### ** Disclaimer **
 
-&emsp; The following tutorial was done on a computer running on Linux-Ubuntu 20.04, installed in February 2024. The author cannot guarantee it will work for newer versions (though it should) or for other OS (E.g.: do not even try to use wsl on Windows. There are a lot of dependencies that do not exist in wsl but that are required to make this whole thing work. Linux is the go-to OS for the GRiSP environment.), nor does he guarantee that updated versions of the packages required to run Erlang and compile it will work with GRiSP. This tutorial, furthermore, is not as detailed as one would hope it to be: the installation process took place in early February, whilst the writing of this section was done in late May. If any questions emerge, the author will gladly help future users with their struggles. Note: another great source of help is the GRiSP [Slack channel](https://github.com/grisp/grisp/wiki).
+&emsp; The following tutorial was done on a computer running on Linux-Ubuntu 20.04, installed in February 2024. The author cannot guarantee it will work for newer versions (though it should) or for other OS (E.g.: do not even try to use wsl on Windows. There are a lot of dependencies that do not exist in wsl but that are required to make this whole thing work. Linux is the go-to OS for the GRiSP environment), nor does he guarantee that updated versions of the packages required to run Erlang and compile it will work with GRiSP. This tutorial, furthermore, is not as detailed as one would hope it to be: the installation process took place in early February, whilst the writing of this section was done in late May. If any questions emerge, the author will gladly help future users with their struggles. Note: another great source of help is the GRiSP [Slack channel](https://github.com/grisp/grisp/wiki).
 
 
 &emsp; Some parts of this tutorial are directly inspired by the GRiSP wiki. Refer to this [website](https://github.com/grisp/grisp/wiki) (GRiSP Wiki).
@@ -99,7 +99,7 @@ start). You can then proceed with “_./rebar3 local install_”.
 &emsp; In the previous user manual, it says to add the plugin configuration for GRiSP in the file
 “_/.config/rebar3/rebar.config_”... Which did not exist. Create the directory and “_rebar.config_” file
 and then add the following plugin configuration (Note: this is not the same as in the previous user manual. Indeed, it struggled to load the plugins. This update
-version details where to find the files, which helps the process.):
+version details where to find the files, which helps the process):
 
 ``` erlang
 {plugins, [
@@ -372,16 +372,88 @@ Docker or a toolchain. The previous user manual says to follow this [tutorial](h
 by adding the following line to the “_grisp/build/toolchain_” section of “_rebar.config_”:
 ``` erlang 
 {grisp, [
-  {build, [
-    {toolchain, [
-      {docker, "grisp/grisp2-rtems-toolchain"}
+    {build, [
+        {toolchain, [
+            {docker, "grisp/grisp2-rtems-toolchain"}
+        ]}
     ]}
-  ]}
 ]}
 ```
+and then run the command:
+``` bash
+rebar3 grisp build --docker
+```
+which should generate a “_grisp” folder containing the VM running on the GRiSP. However...
 
+#### _Struggles faced_
 
+&emsp; The build was not working. It appears that rebar3 does not know what Docker is, despite having
+installed it. To install Docker, see this [link](https://docs.docker.com/engine/install/ubuntu/). After basically one hour of scanning the Internet,
+the author went on the Docker hub website, into the “_grisp/grisp2-rtems-toolchain_” and did the
+following Docker pull:
+``` bash
+sudo docker pull grisp/grisp2-rtems-toolchain
+```
+The goal was to have the Docker image locally. Doing this without sudo failed (“**daemon socket
+connection error**”), but this sadly did not correct the problem.
 
+&emsp;To get the Docker running, on this [page](https://github.com/grisp/rebar3_grisp/releases), they mention adding the Docker toolchain possibility.
+Downloading the .zip, in one of the files of the “_src/_” directory, the author saw that the build was
+trying to ask for “_docker info_”, which returned an error, leading to the problem. To avoid this,
+he followed the advice given on this [page](https://phoenixnap.com/kb/cannot-connect-to-the-docker-daemon-error). This finally resulted in a functioning Docker. But
+next, after putting the right Erlang/OTP version in the “_rebar.config_” file, the author reached a
+new error, saying it did not find a C compiler for the code, despite having “_gcc_” installed on the
+computer.
+&emsp;Despite best efforts, he could not make the Docker work. Instead:
+
+#### Installing a toolchain
+
+&emsp;Go to this [page](https://github.com/grisp/grisp2-rtems-toolchain) and “git clone” the repository, then type, in your shell:
+```bash
+make install
+```
+within the repository. This will take a while. A very long while (almost an hour, in this case). Then, in “_rebar.config_”, instead of
+```erlang
+{docker, "grisp/grisp2-rtems-toolchain"}
+```
+put:
+```erlang
+{directory, "where_is_your_toolchain_installed_on_your_computer"}
+```
+e.g., for the author:
+```erlang
+{directory, "/home/nicolas/TFE/grisp2-rtems-toolchain/rtems/5"}
+```
+You should now be able to compile the application. Go to the directory and type “_rebar3 grisp build_”. Again, the build will take a while.
+
+#### Having your own Hera repositories
+
+In order to modify the code of Hera and debug the application, you need to create your own
+repositories. Here, step by step, is how to do it:
+  - Go on your GitHub account;
+  - Create the repositories: the author recommends keeping “_hera_” and “_hera_synchronization_”
+as default names for these. However, you can call your main repository whatever you want
+(in this project, it was named “_movement_detection_”);
+  - Locally clone all the newly created repositories, then download the original repositories’
+content from the author’s git (download the .zip and paste everything in the repository, it is
+easier). Place everything inside the correct folder;
+  - Then, in the shell, for each local folder:
+``` bash
+git add * 
+git commit -m "My amazing first comment"
+git push -u origin main
+```
+  - Once the repositories are set up, you can now go and modify “_rebar.config_” to put your names
+and reference to your repositories in the {_deps_} part, at the beginning of the file. You will
+have to change things in the “_hera_” repository and in the main repository. There is nothing
+to change in “_hera_synchronization_”;
+  - Then:
+    - Push every changes;
+    - Delete “__grisp_” and “__build_” in the main folder, if they appear;
+    - Do “_rebar3 grisp build_” in the shell within the application’s main folder;
+  And you should now have an application fully built with your repositories.
+
+### Other notes
 
 
 
