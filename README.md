@@ -213,7 +213,7 @@ and a completed “_erl_inetrc_” would look like:
 
 &emsp; You can now connect to the GRiSP2 remotely using:
 ``` bash 
-erl -sname my\_remote\_shell -remsh my\_project\@my\_grisp\_board -setcookie MyCookie
+erl -sname my_remote_shell -remsh my_project@my_grisp_board -setcookie MyCookie
 ```
 and replace everything with the names you have given to your project, etc.
 
@@ -253,6 +253,81 @@ again. It was found that this was due to the “Saving energy” mode of the pho
 forbids/periodically interrupts any remote connection from GRiSP2 boards to its hotspot.
 Upon deactivating it, the boards would find the Wi-Fi (almost) all the time. It was also
 observed that the ”Silent” mode of the phone could disturb the connection.
+
+#### _Struggles faced_
+
+&emsp; Due to the **numerl** NIF, the author never managed to run the Erlang application on his computer.
+Hereafter are some troubles he faced while trying to do so.
+
+&emsp; Using “make shell” worked, but the clean start “make local release && make run local” did not,
+with error: “**Could not start kernel pid, application controller, invalid config data: application:
+grisp; duplicate parameter: devices**”. In the author’s “_home/nicolas/TFE/sensor_fusion/_build/
+computer/rel/sensor_fusion/releases/1.0.0/_” folder, several files were available. In “_sys.config_”,
+two {_devices_} variables were set. These variables were coming from the “_computer.config.src_” file
+in the “_config_” folder. The author tried to comment one of the two and rebuild.
+
+&emsp; It now said that it did not find “_numerl.so_”. The error pointed to “_sensor_fusion/src/numerl.erl,
+line 9_”. Upon analysing, it was found out that line 9 calls “_erlang:load_nif_”, which takes as
+first argument the file path to the shareable object/dynamic library, minus the OS-dependent
+extension (.so in Linux), so here, _numerl_. However, “_numerl.so_” seems to be moved in the trash,
+as was found out by using the command “find /home -name numerl.so”. So there was a problem
+here, as it is necessary that the system accesses this file to correctly compile the whole project.
+According to this [wiki](https://github.com/grisp/grisp/wiki/NIF-Support), there are some special requirements, such as having a main C file named
+“_NAMEOFDRIVER_nif.c_” and this file must reside in the application’s top level folder, under the
+following path:
+``` bash
+grisp/$<$platform$>$/$<$version$>$/build/nifs/NAMEOFDRIVER_nif.c
+```
+In the current case, the author tried to following path:
+``` bash
+grisp/grisp2/default/build/nifs/numerl_nif.c
+```
+Initially, the file was located under:
+``` bash 
+grisp/grisp2/common/build/nifs/numerl_nif.c
+```
+But this attempt in changing the file from folders returned an even weirder error. Upon rebuilding
+the project, the following message appeared:
+``` bash 
+* Patching
+    [grisp] 00100-rtems.patch (already applied, skipping)
+    [grisp] 00300-drivers-nifs.patch ===> sh(git apply 
+--ignore-whitespace 00300-drivers-nifs.patch) 
+%% Note: this file can be found in 
+%% _grisp/grisp2/otp/<your_version>/build/
+failed with return code 1 and the following output:
+error: patch failed: erts/emulator/Makefile.in:938 
+%% At this line, we find: 
+%% ASMJIT_PCH_OBJ=$(TTF_DIR)/asmjit/asmjit.hpp.gch
+error: erts/emulator/Makefile.in: patch does not apply
+```
+where lines starting with “_%%_” indicate a comment from the author.
+
+&emsp; In the face of this error message, the author realised that either his method was wrong, or there
+was something beyond his understanding. So, he tried putting the aforementioned file to where it
+previously was. Upon trying to build once more, the following message appeared in the shell:
+``` bash
+===> Preparing
+* Patching
+    [grisp] 00100-rtems.patch (already applied, skipping)
+    [grisp] 00300-drivers-nifs.patch (already applied, skipping)
+* Copying files
+    [grisp] erts/emulator/sys/unix/erl\_main.c
+    [grisp] xcomp/erl-xcomp-arm-rtems5-25.conf
+    [grisp] xcomp/erl-xcomp-arm-rtems5.conf
+* Copying drivers
+    [grisp] erts/emulator/drivers/unix/grisp\_termios_drv.c
+* Copying nifs
+    [grisp] erts/emulator/nifs/common/grisp\_gpio_nif.c
+    [grisp] erts/emulator/nifs/common/grisp\_hw\_nif.c
+    [grisp] erts/emulator/nifs/common/grisp\_i2c\_nif.c
+    [grisp] erts/emulator/nifs/common/grisp\_rtems\_nif.c
+    [grisp] erts/emulator/nifs/common/grisp\_spi\_nif.c
+    [sensor_fusion] erts/emulator/nifs/common/numerl\_nif.c 
+    %% SO apparently, it DOES copy it. So the question is: 
+    %% why is it not available?
+```
+
 
 
 
