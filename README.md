@@ -65,7 +65,9 @@ commands from those which can be used in a Linux shell.
 &emsp; Upon trying : “kerl install 25.3 /usr/local/lib/erlang/25.3”, an “**Access Denied**” message appeared. This was due to the fact that the user profile on the computer did not have access to the
 directories mentioned. For any directory to which access is denied but is required, in the shell, go to said directory and type:
 
-`sudo chmod 777 directoryName`
+``` bash 
+sudo chmod 777 directoryName
+```
 
 This will allow to read, write and execute on the directory for any user on the computer. If the
 error message happens on any sub-directory, do the same on it. Beware: it is ugly and can be
