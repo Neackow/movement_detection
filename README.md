@@ -638,8 +638,10 @@ movement_detection:realtime(1.5,-1).
 Using these arguments, the **grdos/12** function will launch and keep looping forever due to the
 negative period. It will wait a minimum of 1.5 s between gestures to classify them, as explained
 earlier. Now, you can move the board around to perform the predefined gestures.
+
 &emsp; If you have trouble with getting the function started, check your Wi-Fi connection: the gesture
 recognition algorithm does not work without a stable Wi-Fi connection.
+
 &emsp; Note: if you want to test the effect of specific gestures without using the gesture recognition
 algorithm, you can type the following two lines in the detector’s shell:
 ```erlang
