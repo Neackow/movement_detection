@@ -464,7 +464,7 @@ to change in “_hera_synchronization_”;
 
 &emsp;There are three files in the “_/config_” folder:
 
-#### computer.config.src
+#### _computer.config.src_
 
 &emsp;The only thing you need to change is within the {_sync_node_optional_} part, where you need to
 put your boards’ name and your computer’s name. Note: your computer’s name is here required
@@ -494,6 +494,90 @@ computer, add them in the {_hera_} part of the file. E.g.:
     {log_BL,false}
 ]},
 ```
+
+#### _sys.config_
+
+&emsp;Here, again, change the {_sync_node_optional_} part. Nothing more is required.
+
+#### _vm.args_
+
+&emsp;This sets the arguments of the Virtual Machine. You can set a new Cookie name (be careful to
+then change it every where) in the “**-setcookie**” line, or the name of the deployed application in
+the “**-sname**” line.
+&emsp;Next, if you followed everything that was mentioned previously, there is only one thing left to
+do in the “_rebar.config_” file, which contains all the information to build and deploy the system:
+tell the system the path to the SD-card on which you wish to deploy the application. Typically,
+for the author:
+```erlang
+{deploy , [
+    {pre_script, "rm -rf /media/nicolas/GRISP/*"},
+    {destination, "/media/nicolas/GRISP"},
+    {post_script, "umount /media/nicolas/GRISP"}
+]}
+```
+
+#### Within the _/src_ folder
+
+&emsp; The only file that requires your attention is “_movement_detection.app.src_”. If you added any
+modules, it is required to add them to the {_modules_} part.
+
+#### Files for networking
+
+&emsp; These files can be found in the “_grisp/grisp2/common/deploy/files/_” folder. If you followed the
+previous steps, “_erl_inetrc_” and “_wpa_supplicant.conf_ ” should already be adapted to your system
+and Wi-Fi networks. Note: in “_grisp.ini.mustache_”, at the end of the second line, you can change
+the name of the Erlang cookie if you desire.
+
+#### For the Hera application
+
+&emsp; If you did not created your own Hera repository, this step is not useful. If you did, here are some
+notes about it:
+  - In “_ebin/hera.app_”, you need to specify the {_env_} variables and every new module that you
+add to Hera. The same goes for “_src/hera.app.src_”.
+  - In “_rebar.config_”, do not forget to change the git reference to “_hera_synchronization_”.
+
+### How to properly build and deploy the application
+
+&emsp; Start by removing any “_rebar.lock_” files, either by renaming them or completely removing them.
+Check that absolutely **no** “_rebar.lock_” are left, either in your main application folder or in Hera
+folders. The first user manual mentions that it is only needed to deal with that in the main folder,
+but it is not the case: if you modify anything in Hera, in order to have the new version in the
+GRiSP2 board, you need to remove that file everywhere. Note: “_rebar.lock_” is where the version
+of dependencies are locked. This way our builds are reproducible, meaning if no code has been
+changed in a repository, the build on the repository should always have the same result([https://github.com/erlang/rebar3/issues/2604](https://github.com/erlang/rebar3/issues/2604)). If you
+forget to delete this and that you brought changes to the files, you will waste time building the
+application, then testing it on the board only to realised it is still the old version.
+
+&emsp;After any modifications to Hera, push every change to your git repositories. This has been automated using a bash script named “_push_hera.sh_”. This pushes the “_hera_” and “_hera_synchronization_”
+folders, using your GitHub credentials. Modify it to put yours. Beware: put the bash script in
+the “_.gitignore_” if you directly put your GitHub password there. However, there is a cleaner way
+of doing it: instead of your password, use something like: “$ENVVAR” and set the environment
+variable in your session using:
+```bash
+export ENVVAR=yourpassword
+```
+This only works _in your current shell session_, just like the rebar3 variable or the activation of the
+Erlang installation. **Remember to always do the three commands upon starting a shell.**
+
+&emsp;To use the script, in the main folder, type in the shell:
+```bash
+make COMMIT="Your amazing commit message" push_hera
+```
+If you want to create your own bash, feel free. But do not forget to type, in the shell:
+```bash
+chmod +x bashFileName.sh
+```
+to add execution rights.
+
+&emsp;Next, make sure to delete both the “__build_” and “__grisp_” folders everywhere you find one.
+Otherwise, it could have the same effect as the “_rebar.lock_” file. This can be done using a new
+command of “_makefile_”:
+```bash
+make clear
+```
+
+
+
 
 
 
